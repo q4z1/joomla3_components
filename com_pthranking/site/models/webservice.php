@@ -43,7 +43,7 @@ class PthRankingModelWebservice extends JModelItem
         $option['prefix']   = '';             // Database prefix (may be empty)
          
         $db = JDatabaseDriver::getInstance( $option );
-        return($db);
+        return($db); // TODO: maybe remember the result
      }
 
 
@@ -219,30 +219,37 @@ class PthRankingModelWebservice extends JModelItem
 
     public function getSeasonPie()
     {
+        $seasononly=TRUE; // False means all-time
+        $return_data=TRUE; // should we return the main data
+        $return_png_url=FALSE; // should we return url for pie graph
+
         $db=$this->mydb();
 
         $jinput = JFactory::getApplication()->input;
-        $nowinput= $jinput->get('now','','STRING');
-        if($nowinput=="")
+        if($seasononly)
         {
-          $query = $db->getQuery(true);
-//           $query->select(array('MAX(start_time)'),array('res')); // AS res
-          $query->select('MAX(start_time) AS res'); // the joomla database api sucks
-          $query->from('#__game');
-          $db->setQuery($query);
-          $rows = $db->loadObjectList();
-          if(is_array($rows) && count($rows)==1)
-          {
-            $now=$rows[0]->res;
-//             var_dump($rows);
-          }
-          else $now="1970-01-01 00:00:00";
-        }
-        else
-        {
-          $unixtime=strtotime($nowinput);
-          if($unixtime==FALSE) $now="1970-01-01 00:00:00";
-          else $now=date("Y-m-d H:i:s",$unixtime);
+            $nowinput= $jinput->get('now','','STRING');
+            if($nowinput=="")
+            {
+              $query = $db->getQuery(true);
+//               $query->select(array('MAX(start_time)'),array('res')); // AS res
+              $query->select('MAX(start_time) AS res'); // the joomla database api sucks
+              $query->from('#__game');
+              $db->setQuery($query);
+              $rows = $db->loadObjectList();
+              if(is_array($rows) && count($rows)==1)
+              {
+                $now=$rows[0]->res;
+//                 var_dump($rows);
+              }
+              else $now="1970-01-01 00:00:00";
+            }
+            else
+            {
+              $unixtime=strtotime($nowinput);
+              if($unixtime==FALSE) $now="1970-01-01 00:00:00";
+              else $now=date("Y-m-d H:i:s",$unixtime);
+            }
         }
 
 
