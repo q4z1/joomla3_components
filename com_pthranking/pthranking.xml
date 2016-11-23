@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.2.0" method="upgrade">
+	<!-- direct call example: index.php?option=com_pthranking&task=registration -->
+	<!-- /component/pthranking/?view=registration -->
+	<name>PTH Ranking</name>
+	<!-- The following elements are optional and free of formatting constraints -->
+	<creationDate>October 2016</creationDate>
+	<author>Kai Philipp</author>
+	<authorEmail>webmaster@pokerth.net</authorEmail>
+	<authorUrl>http://www.pokerth.net</authorUrl>
+	<copyright>Copyright Info</copyright>
+	<license>License Info</license>
+	<!--  The version string is recorded in the components table -->
+	<version>0.0.22</version>
+	<!-- The description is optional and defaults to the name -->
+	<description>PokerTH ranking component</description>
+ 
+	<update> <!-- Runs on update; New since J2.5 -->
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+ 
+	<!-- Site Main File Copy Section -->
+	<!-- Note the folder attribute: This attribute describes the folder
+		to copy FROM in the package to install therefore files copied
+		in this section are copied from /site/ in the package -->
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>pthranking.php</filename>
+		<filename>controller.php</filename>
+		<folder>views</folder>
+		<folder>models</folder>
+	</files>
+	
+	<media folder="media" destination="com_pthranking">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+ 
+	<administration>
+		<!-- Administration Menu Section -->
+		<menu link='index.php?option=com_pthranking'>PokerTH Ranking</menu>
+		<!-- Administration Main File Copy Section -->
+		<!-- Note the folder attribute: This attribute describes the folder
+			to copy FROM in the package to install therefore files copied
+			in this section are copied from /admin/ in the package -->
+		<files folder="admin">
+			<!-- Admin Main File Copy Section -->
+			<filename>index.html</filename>
+			<filename>pthranking.php</filename>
+			<!-- SQL files section -->
+			<folder>sql</folder>
+		</files>
+	</administration>
+ 
+</extension>
