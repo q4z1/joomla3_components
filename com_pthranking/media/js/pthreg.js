@@ -11,7 +11,7 @@ document.onreadystatechange = () => {
           console.log("#pthreg clicked.");
           // check Username
           jQuery.get(
-            "index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+jQuery("#pthranking-username").val()).success(
+            "index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+jQuery("#pthranking-username").val()).done(
             function(data){
               console.log("checkusername response="+data);
               var obj = JSON.parse(data);
@@ -28,7 +28,7 @@ document.onreadystatechange = () => {
                       scrollTop: jQuery("#errors").offset().top - 50
                   }, 500);
                 }else{
-                  // validate the rest of the form
+                  // username is valid - validate the rest
                   usernameValid = true;
                   validate_inputs();
                 }
@@ -68,21 +68,57 @@ function validate_inputs(){
   }
   
   if(valid && usernameValid){
-    // post data and insert it to database => redirect to email validation site!
-    console.log("form data is valid and ready to be inserted into db.");
-    jQuery('#errors').html("<ul class='text-success'><li>Saving data into database and sending out a validation email ...</li></ul>");
-    jQuery('html, body').animate({
-        scrollTop: jQuery("#errors").offset().top - 50
-    }, 500);
-    var postData = {
-      email: email,
-      username: username,
-      password: password,
-      gender: gender,
-      country: country,
-      
-      
-    }
+    // check email
+    jQuery.get(
+      "index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkemail&pthemail="+jQuery("#pthranking-email").val()).done(
+      function(data){
+        console.log("checkemail response="+data);
+        var obj = JSON.parse(data);
+        if(obj.status != "ok"){
+          // an error happened - how to handle it?
+        }
+        else{
+          if(obj.response == true){
+            // email already used - either in player table or in joomla forum user table!
+            // put a hint beside username - username already used!
+            console.log("email already used!");
+            jQuery('#errors').html("<ul class='text-danger'><li>Email-Address is already used!</li></ul>");
+            jQuery('html, body').animate({
+                scrollTop: jQuery("#errors").offset().top - 50
+            }, 500);
+          }else{
+            // all valid - post data and insert it to database => redirect to email validation site!
+            console.log("form data is valid and ready to be inserted into db.");
+            jQuery('#errors').html("<ul class='text-success'><li>Saving data into database and sending out a validation email ...</li></ul>");
+            jQuery('html, body').animate({
+                scrollTop: jQuery("#errors").offset().top - 50
+            }, 500);
+            var postData = {
+              email: email,
+              username: username,
+              password: btoa(password), // crappy base46 encoding - but we need the clear text passwords on php-server side
+              gender: gender,
+              country: country,
+              submit: true,
+            };
+            jQuery.post(
+              "/index.php?option=com_pthranking&task=webservice&format=raw&pthtype=storeuserdata",
+              postData
+            ).done(
+              function(data){
+                console.log("post done - response="+data);
+                // just debug output - redirect to email validation page should follow
+                jQuery('#errors').html("<ul class='text-success'><li>post done - response="+data+"</li></ul>");
+                  jQuery('html, body').animate({
+                      scrollTop: jQuery("#errors").offset().top - 50
+                  }, 500);
+              }
+            );
+
+          }
+        }
+      }
+    );
   }else{
     console.log("valid === false && usernameValid === false !");
     var errHtml = "<ul class='text-danger'>";

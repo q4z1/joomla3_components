@@ -301,23 +301,28 @@ class PthRankingViewRegistration extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
+		
+		// @TODO: clause for $this->submit no longer needed as the post will be done by webservice and the redirect to email val by jQuery
 		$jinput = JFactory::getApplication()->input;
 		$this->submit = $jinput->get('submit', false, 'BOOL');
 		
 		if($this->submit){
 
+			
 		}else{
-
+			// nothing to do - just show the template with the registration form
 		}
 		
         
-        
-		// Assign data to the view
-        
-        
-		$this->msg = 'PokerTH ranking - registration view - submit = ' .var_export($this->submit, true);
+
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			JLog::add(implode('<br />', $errors), JLog::WARNING, 'jerror');
  
-		// Display the view
-		parent::display($tpl);
+			return false;
+		}
+		
+        parent::display($tpl);
 	}
 }

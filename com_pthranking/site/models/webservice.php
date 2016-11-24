@@ -21,6 +21,8 @@ class PthRankingModelWebservice extends JModelItem
 	 * @var string message
 	 */
 	protected $message;
+	
+	protected $db_salt = "mySalt";
 
     protected $currentid=0; // these should always be in a pair
     protected $currentname=""; // these should always be in a pair
@@ -37,14 +39,94 @@ class PthRankingModelWebservice extends JModelItem
         $option = array(); //prevent problems
         $option['driver']   = 'mysql';            // Database driver name
         $option['host']     = 'localhost';    // Database host name
-        $option['user']     = 'root';       // User for database authentication
-        $option['password'] = ' ';   // Password for database authentication
+        $option['user']     = 'pthrdbuser';       // User for database authentication
+        $option['password'] = 'BKmTEOUOeRjgiwyP';   // Password for database authentication
+//        $option['user']     = 'root';       // User for database authentication
+//        $option['password'] = ' ';   // Password for database authentication
         $option['database'] = 'pokerth_ranking';      // Database name
         $option['prefix']   = '';             // Database prefix (may be empty)
          
         $db = JDatabaseDriver::getInstance( $option );
         return($db); // TODO: maybe remember the result
      }
+	 
+	 public function getStoreUserdata(){
+		mDebug("getStoreUserdata entered...");
+		$jinput = JFactory::getApplication()->input;
+		
+		$submit = $jinput->post->get('submit', false, 'BOOL');
+		
+		if(!$submit){
+			return json_encode(array("status" => "nok", "reason" => "submit not set or false"));
+		}
+		
+		$email = $jinput->post->get('email', "", 'STRING');
+		$username = $jinput->post->get('username', "", 'STRING');
+		$password = base64_decode($jinput->post->get('password', "", 'BASE64'));
+		$gender = $jinput->post->get('gender', "", 'WORD');
+		$country = $jinput->post->get('country', "", 'WORD');
+		
+		mDebug("post data:\n$email,$username,$gender,$country\n");
+		// @TODO: make some checks
+
+		
+		// @TODO: store data into db
+		$db = $this->mydb();
+		
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		 
+		/*
+			CREATE TABLE `player` (
+			  `player_id` int(11) NOT NULL,
+			  `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+			  `password` varbinary(64) NOT NULL,
+			  `email` varchar(64) NOT NULL,
+			  `created` datetime NOT NULL,
+			  `last_login` datetime DEFAULT NULL,
+			  `country_iso` char(2) DEFAULT NULL,
+			  `gender` enum('','m','f') DEFAULT NULL,
+			  `avatar_hash` varchar(64) DEFAULT NULL,
+			  `avatar_mime` enum('','png','jpg','gif') DEFAULT NULL,
+			  `act_key` varchar(64) NOT NULL,
+			  `active` tinyint(1) NOT NULL DEFAULT '0',
+			  `blocked` tinyint(1) NOT NULL DEFAULT '0'
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+		 */
+		 
+		mDebug("getQuery executed.");
+		
+		// Insert columns.
+		$columns = array('username', 'password', 'email', 'created', 'country_iso', 'gender', 'act_key');
+		 
+		// Insert values.
+		$values = array(
+			$db->quote($username),
+			"AES_ENCRYPT('".mysql_real_escape($password)."', '".$this->db_salt."')", // $db->quote destroys the AES_ENCRYPT function - so it's oldschool mysql_real_escape ;)
+			$db->quote($email),
+			$db->quote(date("Y-m-d H:i:s")),
+			$db->quote($country),
+			$db->quote($gender),
+			$db->quote(md5(time())), // maybe a shorter activation key for email validation?
+		);
+		 
+		mDebug("values prepared:\n".var_export($values, true));
+		
+		// Prepare the insert query.
+		$query
+			->insert($db->quoteName('#__player'))
+			->columns($db->quoteName($columns))
+			->values(implode(',', $values));
+		 
+		// Set the query using our newly populated query object and execute it.
+		$db->setQuery($query);
+		$res = $db->execute();
+		
+		// @XXX: creating a forum account will be done, when email address is validated
+		
+		mDebug("getStoreUserdata: db query executed... leaving method...");
+		return json_encode(array("status" => "ok", "response" => $res));
+	 }
 
 
 	public function getCheckUsername()
@@ -55,26 +137,12 @@ class PthRankingModelWebservice extends JModelItem
         $username = $jinput->get('pthusername', "", 'STRING');
 		
 		if($username == "") return json_encode(array("status" => "nok", "reason" => "username empty"));
-        
-        $option = array(); //prevent problems
          
-        $option['driver']   = 'mysql';            // Database driver name
-        $option['host']     = 'localhost';    // Database host name
-        $option['user']     = 'pthrdbuser';       // User for database authentication
-        $option['password'] = 'BKmTEOUOeRjgiwyP';   // Password for database authentication
-//        $option['user']     = 'root';       // User for database authentication
-//        $option['password'] = ' ';   // Password for database authentication
-        $option['database'] = 'pokerth_ranking';      // Database name
-        $option['prefix']   = '';             // Database prefix (may be empty)
-         
-        $db = JDatabaseDriver::getInstance( $option );
+        $db = $this->mydb();
         
         $query = $db->getQuery(true);
         $query->select('player_id,username');
         $query->from('#__player');
-        $esc=mysql_real_escape_string($username);
-//         $query->where($db->quoteName('username') . " = '{$username}'" );
-//         $query->where($db->quoteName('username') . " = '{$esc}'" );
         $query->where($db->quoteName('username') . " = ".$db->quote($username) );
         $db->setQuery($query);
         
@@ -89,7 +157,6 @@ class PthRankingModelWebservice extends JModelItem
 			$query = $db2->getQuery(true);
 			$query->select('id,username,email,lastvisitDate');
 			$query->from('#__users');
-// 			$query->where($db2->quoteName('username') . " = '{$username}'" );
             $query->where($db2->quoteName('username') . " = ".$db2->quote($username) );
 			$query->where($db2->quoteName('lastvisitDate') . " > '". date("Y-m-d H:i:s", strtotime('-12 month', time())) . "'");
 			$db2->setQuery($query);
@@ -102,7 +169,45 @@ class PthRankingModelWebservice extends JModelItem
 		return json_encode(array("status" => "ok", "response" => $return));
 	}
 
-
+	public function getCheckEmail()
+	{
+        $return = false;
+        
+        $jinput = JFactory::getApplication()->input;
+        $email = $jinput->get('pthemail', "", 'STRING');
+		
+		if($email == "") return json_encode(array("status" => "nok", "reason" => "email empty"));
+        
+        $db = $this->mydb();
+        
+        $query = $db->getQuery(true);
+        $query->select('player_id,username');
+        $query->from('#__player');
+        $query->where($db->quoteName('email') . " = ".$db->quote($email) );
+        $db->setQuery($query);
+        
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0){
+			$return = true;
+		}
+		
+		// next check if email with forum account exists
+		if(!$return){
+			$db2    = JFactory::getDBO();
+			$query = $db2->getQuery(true);
+			$query->select('id,username,email,lastvisitDate');
+			$query->from('#__users');
+            $query->where($db2->quoteName('email') . " = ".$db2->quote($email) );
+			$query->where($db2->quoteName('lastvisitDate') . " > '". date("Y-m-d H:i:s", strtotime('-12 month', time())) . "'");
+			$db2->setQuery($query);
+			$rows = $db2->loadObjectList();
+			if(is_array($rows) && count($rows) > 0){
+				$return = true;
+			}
+		}
+		
+		return json_encode(array("status" => "ok", "response" => $return));
+	}
 
 	public function getRankingTable()
 	{
