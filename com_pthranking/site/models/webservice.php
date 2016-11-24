@@ -51,7 +51,7 @@ class PthRankingModelWebservice extends JModelItem
      }
 	 
 	 public function getStoreUserdata(){
-		mDebug("getStoreUserdata entered...");
+
 		$jinput = JFactory::getApplication()->input;
 		
 		$submit = $jinput->post->get('submit', false, 'BOOL');
@@ -65,36 +65,16 @@ class PthRankingModelWebservice extends JModelItem
 		$password = base64_decode($jinput->post->get('password', "", 'BASE64'));
 		$gender = $jinput->post->get('gender', "", 'WORD');
 		$country = $jinput->post->get('country', "", 'WORD');
-		
-		mDebug("post data:\n$email,$username,$gender,$country\n");
+		$act_key = md5(time());
+
 		// @TODO: make some checks
 
 		
-		// @TODO: store data into db
+		// @XXX: store data into db
 		$db = $this->mydb();
 		
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		 
-		/*
-			CREATE TABLE `player` (
-			  `player_id` int(11) NOT NULL,
-			  `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-			  `password` varbinary(64) NOT NULL,
-			  `email` varchar(64) NOT NULL,
-			  `created` datetime NOT NULL,
-			  `last_login` datetime DEFAULT NULL,
-			  `country_iso` char(2) DEFAULT NULL,
-			  `gender` enum('','m','f') DEFAULT NULL,
-			  `avatar_hash` varchar(64) DEFAULT NULL,
-			  `avatar_mime` enum('','png','jpg','gif') DEFAULT NULL,
-			  `act_key` varchar(64) NOT NULL,
-			  `active` tinyint(1) NOT NULL DEFAULT '0',
-			  `blocked` tinyint(1) NOT NULL DEFAULT '0'
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-		 */
-		 
-		mDebug("getQuery executed.");
 		
 		// Insert columns.
 		$columns = array('username', 'password', 'email', 'created', 'country_iso', 'gender', 'act_key');
@@ -102,15 +82,13 @@ class PthRankingModelWebservice extends JModelItem
 		// Insert values.
 		$values = array(
 			$db->quote($username),
-			"AES_ENCRYPT('".mysql_real_escape($password)."', '".$this->db_salt."')", // $db->quote destroys the AES_ENCRYPT function - so it's oldschool mysql_real_escape ;)
+			"AES_ENCRYPT('".mysql_real_escape_string($password)."', '".$this->db_salt."')", // $db->quote destroys the AES_ENCRYPT function - so it's oldschool mysql_real_escape ;)
 			$db->quote($email),
 			$db->quote(date("Y-m-d H:i:s")),
 			$db->quote($country),
 			$db->quote($gender),
-			$db->quote(md5(time())), // maybe a shorter activation key for email validation?
+			$db->quote($act_key), // maybe a shorter activation key for email validation?
 		);
-		 
-		mDebug("values prepared:\n".var_export($values, true));
 		
 		// Prepare the insert query.
 		$query
@@ -122,9 +100,34 @@ class PthRankingModelWebservice extends JModelItem
 		$db->setQuery($query);
 		$res = $db->execute();
 		
-		// @XXX: creating a forum account will be done, when email address is validated
+		// @XXX: send an email with the activation key & link for activation page
+		$email = "ernstlich.heiter@gmail.com"; // @FIXME: debug
+		$mailer = JFactory::getMailer();
+		$config = JFactory::getConfig();
+		$sender = array( 
+			$config->get( 'mailfrom' ),
+			$config->get( 'fromname' ) 
+		);
+		$mailer->setSender($sender);
+		$mailer->addRecipient(array($email, $config->get( 'mailfrom' )));
+		$body   = '<h2>Test Mail ('.$config->get( 'mailfrom' ).' is put as recipient too)</h2>'
+			. '<div>This is a test mail for the upcoming email validation.... act_key = ' . $act_key
+			. '<img src="cid:logo_id" alt="logo"/></div>';
+		$mailer->isHTML(true);
+		$mailer->Encoding = 'base64';
+		$mailer->setBody($body);
+		// Optionally add embedded image
+		$mailer->AddEmbeddedImage( JPATH_COMPONENT.'/media/kunena/email/pokerth.png', 'logo_id', 'logo.jpg', 'base64', 'image/jpeg' );
+		$send = $mailer->Send();
+		if ( $send !== true ) {
+			mDebug('Error sending email: ' . $send->__toString());
+		} else {
+			mDebug('Mail sent');
+		}
 		
-		mDebug("getStoreUserdata: db query executed... leaving method...");
+		
+		// @XXX: creating a forum account will be done, when email address is validated
+
 		return json_encode(array("status" => "ok", "response" => $res));
 	 }
 
