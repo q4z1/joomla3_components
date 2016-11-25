@@ -342,8 +342,8 @@ class PthRankingModelWebservice extends JModelItem
     public function getSeasonPie()
     {
         $seasononly=TRUE; // False means all-time
-        $return_data=TRUE; // should we return the main data
-        $return_png_url=FALSE; // should we return url for pie graph
+//         $return_data=TRUE; // should we return the main data
+//         $return_png_url=TRUE; // should we return url for pie graph
 
         $db=$this->mydb();
 
@@ -374,7 +374,6 @@ class PthRankingModelWebservice extends JModelItem
             }
         }
 
-
         $this->set_user_id_pair();
 
         $query = $db->getQuery(true);
@@ -382,44 +381,57 @@ class PthRankingModelWebservice extends JModelItem
 //         $query->select(array('place','COUNT(*)'),array(null,'counter'));
         $query->select('place , COUNT(*) AS counter');
         $query->from('#__game_has_player');
-        $query->where($db->quoteName('player_idplayer')." = ".$this->currentid,'AND');
-        $query->where($db->quoteName('start_time')." >= start_of_this_season('$now')");
+        if($seasononly)
+        {
+            $query->where($db->quoteName('player_idplayer')." = ".$this->currentid,'AND');
+            $query->where($db->quoteName('start_time')." >= start_of_this_season('$now')");
+        }
+        else
+        {
+            $query->where($db->quoteName('player_idplayer')." = ".$this->currentid,'AND');
+        }
         $query->group('place');
         $db->setQuery($query); // TODO: appropriate INDEX for this query
         $rows = $db->loadObjectList();
 
-        $season_pie=array(0,0,0,0,0,0,0,0,0,0,0);
+        $place_count=array(0,0,0,0,0,0,0,0,0,0,0);
         if(is_array($rows) && count($rows)>=1)
         {
           foreach($rows as $row)   
           {
-            $season_pie[$row->place]=$row->counter;
+            $place_count[$row->place]=$row->counter;
           }
         }
-        $season_pie[0]=0; // sum goes here
+        $place_count[0]=0; // sum goes here
         for($i=1;$i<11;$i++)
         {
-          $season_pie[0]+=$season_pie[$i];
+          $place_count[0]+=$place_count[$i];
         }
         $season_percent=array(0,0,0,0,0,0,0,0,0,0,0);
-        $ret=array();
+        $retdata=array();
         for($i=1;$i<11;$i++)
         {
           $retrow=array();
           $retrow["place"]="$i";
-          $retrow["count"]=$season_pie[$i];
-          if($season_pie[0]>=1) $percent=$season_pie[$i]*100.0/$season_pie[0];
+          $retrow["count"]=$place_count[$i];
+          if($place_count[0]>=1) $percent=$place_count[$i]*100.0/$place_count[0];
           else $percent=0.0;
           $retrow["percent"]=sprintf("%.1f %%",$percent);
-          $ret[]=$retrow;
+          $retdata[]=$retrow;
         }
+        $url_data=implode(",",array_slice($place_count,1,10));
+        $return_url=array("pic1.php?d=".$url_data,"pic1.php?t=".$url_data);
         $retrow=array();
         $retrow["place"]="sum";
-        $retrow["count"]=$season_pie[0]; // TODO: maybe everything as string
+        $retrow["count"]=$place_count[0]; // TODO: maybe everything as string
         $retrow["percent"]="100.0 %";
-        if($season_pie[0]==0) $retrow["perccent"]="0.0 %";
-        $ret[]=$retrow;
+        if($place_count[0]==0) $retrow["percent"]="0.0 %";
+        $retdata[]=$retrow;
+        $ret=array();
+        $ret["data"]=$retdata;
+        $ret["url"]=$return_url;
         return json_encode($ret);
+        // TODO: maybe return object/array is too complicated?
     }
 }
 
