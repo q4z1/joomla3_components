@@ -21,6 +21,14 @@ class PthRankingModelTable extends JModelItem
 	 * @var string message
 	 */
 	protected $message;
+	
+	/**
+	 * @var int kind_of_ranking
+   * 0: Traditional poker-heroes.com ranking.
+   * 1: Earnings ranking - The richest first.
+   * 2: Efficiency ranking - The most efficient first.
+	 */
+	 protected $kind_of_ranking;
 
     // TODO: database
  
@@ -53,14 +61,21 @@ class PthRankingModelTable extends JModelItem
         $db = JDatabaseDriver::getInstance( $option );
         // end get database
         
+        //The attribute names to order by:
+        $rank_attr = array(
+          0 => "final_score",
+          1 => "earnings",
+          2 => "efficiency",
+        );
+        
         $return=false;
         $start2=$start-1;
         // start query
         $query = $db->getQuery(true);
         $query->select('*');
-        $query->from('#__player_ranking');
+        $query->from('#__current_ranking');
         $query->where('1');
-        $query->order('final_score DESC, season_games DESC, player_id ASC');
+        $query->order('$rank_attr[$kind_of_ranking] DESC, season_games DESC, player_id ASC');
         $query->setLimit($size,$start2);
         $db->setQuery($query);  
         
@@ -81,6 +96,8 @@ class PthRankingModelTable extends JModelItem
             $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
             $tableentry["average_score"]=$average_score;
             $tableentry["season_games"]=$row->season_games;
+            $tableentry["earnings"]=$row->earnings;
+            $tableentry["efficiency"]=$row->efficiency;
             $tableentry["rank"]=$rank;
             $table[]=$tableentry;
             $rank+=1;

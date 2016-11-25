@@ -288,6 +288,14 @@ FROM `game_has_player` a
 GROUP BY `player_idplayer`;
 
 --
+-- The complete ranking table.
+--
+CREATE VIEW `current_ranking` AS
+SELECT `player_ranking`.*, `money_list`.`earnings`, `money_list`.`efficiency`
+FROM `player_ranking`, `money_list`
+WHERE `player_ranking`.`player_id` = `money_list`.`player_idplayer`
+
+--
 -- Indizes der exportierten Tabellen
 --
 
