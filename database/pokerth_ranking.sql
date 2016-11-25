@@ -16,13 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Datenbank: `pokerth_ranking`
---
-DROP DATABASE IF EXISTS `pokerth_ranking`;
-CREATE DATABASE `pokerth_ranking`;
-USE `pokerth_ranking`;
-
 
 DELIMITER $$
 --
@@ -271,6 +264,28 @@ CREATE TABLE IF NOT EXISTS `player_ranking` (
   `average_score` int(13) NOT NULL DEFAULT '0',
   `games_seven_days` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- A view to see the simulated real world earnings and the efficiency.
+-- The simulated real world earnings are calculated just like real world
+-- SNGs:
+--  1st         place: +4
+--  2nd         place: +2
+--  3rd         place: +1
+--  4th to 10th place: -1
+--
+-- The efficiency is just the average earnings per game: earnings / games.
+--
+CREATE VIEW money_list AS
+SELECT a.`player_idplayer`,
+  (SELECT COUNT(*) FROM `game_has_player` WHERE `player_idplayer` = a.`player_idplayer` AND `place` = 1) * 4 +
+  (SELECT COUNT(*) FROM `game_has_player` WHERE `player_idplayer` = a.`player_idplayer` AND `place` = 2) * 2 +
+  (SELECT COUNT(*) FROM `game_has_player` WHERE `player_idplayer` = a.`player_idplayer` AND `place` = 3) -
+  (SELECT COUNT(*) FROM `game_has_player` WHERE `player_idplayer` = a.`player_idplayer` AND `place` > 3) AS earnings,
+  (SELECT COUNT(DISTINCT `game_idgame`) FROM `game_has_player` WHERE `player_idplayer` = a.`player_idplayer`) AS games,
+  (SELECT earnings / games) AS efficiency
+FROM `game_has_player` a
+GROUP BY `player_idplayer`;
 
 --
 -- Indizes der exportierten Tabellen
