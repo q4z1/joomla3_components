@@ -49,7 +49,7 @@ class PthRankingModelEmailval extends JModelItem
         
         $db = $this->mydb();
         $query = $db->getQuery(true);
-        $query->select("player_id,username,act_key,CAST(AES_DECRYPT(password, '".RDB_SALT."') AS CHAR) as password,email");
+        $query->select("player_id,username,CAST(AES_DECRYPT(password, '".RDB_SALT."') AS CHAR) as password,email");
         $query->from('#__player');
         $query->where($db->quoteName('act_key') . " = ".$db->quote($this->act_key) );
         $query->where($db->quoteName('active') . " = 0" );
@@ -62,7 +62,7 @@ class PthRankingModelEmailval extends JModelItem
 		}
         
         
-        if($return = true){
+        if($return === true){
             // @TODO: set active to 1
             $query = $db->getQuery(true);
             // Fields to update.
@@ -79,6 +79,26 @@ class PthRankingModelEmailval extends JModelItem
             
             // @TODO: create forum account
             
+			/*
+				CREATE TABLE `j25_users` (
+				  `id` int(11) NOT NULL,
+				  `name` varchar(400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+				  `username` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+				  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+				  `password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+				  `block` tinyint(4) NOT NULL DEFAULT '0',
+				  `sendEmail` tinyint(4) DEFAULT '0',
+				  `registerDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+				  `lastvisitDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+				  `activation` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+				  `params` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+				  `lastResetTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of last password reset',
+				  `resetCount` int(11) NOT NULL DEFAULT '0' COMMENT 'Count of password resets since lastResetTime',
+				  `otpKey` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Two factor authentication encrypted keys',
+				  `otep` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'One time emergency passwords',
+				  `requireReset` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Require user to reset password on next login'
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+			 */
         }
 
         return $return;
