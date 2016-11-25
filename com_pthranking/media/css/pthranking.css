@@ -1,3 +1,6 @@
 #errors .text-danger{ color: red;}
 #errors .text-success{ color: green;}
 #pthsignup-form sup.mandatory{ color: red; font-size: smaller;}
+#pthemailval-form input[type=text]{
+    width: 300px!important;
+}

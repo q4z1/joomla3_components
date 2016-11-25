@@ -21,37 +21,29 @@ class PthRankingModelWebservice extends JModelItem
 	 * @var string message
 	 */
 	protected $message;
-	
-	protected $db_salt = "mySalt";
 
     protected $currentid=0; // these should always be in a pair
     protected $currentname=""; // these should always be in a pair
- 
-	/**
-	 * Get the message
-         *
-	 * @return  json 	array of user objects for ajax-called userlist in uddeim pm component
-	 */
+	
      // get the other database
      private function mydb()
      {
-
         $option = array(); //prevent problems
-        $option['driver']   = 'mysql';            // Database driver name
-        $option['host']     = 'localhost';    // Database host name
-        $option['user']     = 'pthrdbuser';       // User for database authentication
-        $option['password'] = 'BKmTEOUOeRjgiwyP';   // Password for database authentication
-//        $option['user']     = 'root';       // User for database authentication
-//        $option['password'] = ' ';   // Password for database authentication
-        $option['database'] = 'pokerth_ranking';      // Database name
-        $option['prefix']   = '';             // Database prefix (may be empty)
-         
+        $option['driver']   = RDB_DRIVER;
+        $option['host']     = RDB_HOST;
+        $option['user']     = RDB_USER;
+        $option['password'] = RDB_PASS;
+        $option['database'] = RDB_DB;
+        $option['prefix']   = RDB_PREF;
         $db = JDatabaseDriver::getInstance( $option );
         return($db); // TODO: maybe remember the result
      }
 	 
 	 public function getStoreUserdata(){
-
+		$return = false;
+		$response = "unspecified";
+		$status = "nok";
+		
 		$jinput = JFactory::getApplication()->input;
 		
 		$submit = $jinput->post->get('submit', false, 'BOOL');
@@ -65,7 +57,7 @@ class PthRankingModelWebservice extends JModelItem
 		$password = base64_decode($jinput->post->get('password', "", 'BASE64'));
 		$gender = $jinput->post->get('gender', "", 'WORD');
 		$country = $jinput->post->get('country', "", 'WORD');
-		$act_key = md5(time());
+		$act_key = md5(microtime()); // microtime() instead of time() - just to be safe
 
 		// @TODO: make some checks
 
@@ -82,7 +74,7 @@ class PthRankingModelWebservice extends JModelItem
 		// Insert values.
 		$values = array(
 			$db->quote($username),
-			"AES_ENCRYPT('".mysql_real_escape_string($password)."', '".$this->db_salt."')", // $db->quote destroys the AES_ENCRYPT function - so it's oldschool mysql_real_escape ;)
+			"AES_ENCRYPT('".mysql_real_escape_string($password)."', '".RDB_SALT."')", // $db->quote destroys the AES_ENCRYPT function - so it's oldschool mysql_real_escape_string ;)
 			$db->quote($email),
 			$db->quote(date("Y-m-d H:i:s")),
 			$db->quote($country),
@@ -100,35 +92,59 @@ class PthRankingModelWebservice extends JModelItem
 		$db->setQuery($query);
 		$res = $db->execute();
 		
-		// @XXX: send an email with the activation key & link for activation page
-		$email = "ernstlich.heiter@gmail.com"; // @FIXME: debug
-		$mailer = JFactory::getMailer();
-		$config = JFactory::getConfig();
-		$sender = array( 
-			$config->get( 'mailfrom' ),
-			$config->get( 'fromname' ) 
-		);
-		$mailer->setSender($sender);
-		$mailer->addRecipient(array($email, $config->get( 'mailfrom' )));
-		$body   = '<h2>Test Mail ('.$config->get( 'mailfrom' ).' is put as recipient too)</h2>'
-			. '<div>This is a test mail for the upcoming email validation.... act_key = ' . $act_key
-			. '<img src="cid:logo_id" alt="logo"/></div>';
-		$mailer->isHTML(true);
-		$mailer->Encoding = 'base64';
-		$mailer->setBody($body);
-		// Optionally add embedded image
-		$mailer->AddEmbeddedImage( JPATH_COMPONENT.'/media/kunena/email/pokerth.png', 'logo_id', 'logo.jpg', 'base64', 'image/jpeg' );
-		$send = $mailer->Send();
-		if ( $send !== true ) {
-			mDebug('Error sending email: ' . $send->__toString());
-		} else {
-			mDebug('Mail sent');
+		if($res){
+			// @XXX: send an email with the activation key & link for activation page - partly taken from components/com_users/models/registration.php
+			$config = JFactory::getConfig();
+	
+			$data['name'] = $username;
+			$data['fromname'] = $config->get('fromname');
+			$data['mailfrom'] = $config->get('mailfrom');
+			$data['sitename'] = $config->get('sitename');
+			$data['siteurl'] = JUri::root();
+			$uri = JUri::getInstance();
+			$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
+			$data['activate'] = $base . JRoute::_('index.php?option=com_pthranking&view=emailval&actkey=' . $act_key, false);
+			// Remove administrator/ from activate url in case this method is called from admin
+			// @XXX: propably not needed - but just to be safe
+			if (JFactory::getApplication()->isAdmin())
+			{
+				$adminPos         = strrpos($data['activate'], 'administrator/');
+				$data['activate'] = substr_replace($data['activate'], '', $adminPos, 14);
+			}
+			$emailSubject = JText::sprintf(
+				"Game-Account Details for %s at %s",
+				$data['name'],
+				$data['sitename']
+			);
+			// @XXX: text for activation email
+			$emailBody = JText::sprintf(
+						"<h3>Hello %s,</h3><p>Thank you for registering for the game at %s.</p><p>Your game-account is created and must be activated before you can use it.</p><p>To activate the game-account select the following link or copy-paste it in your browser:<br />%s</p><p>After activation you may login to the <a href='%s'>Forum</a> and to the Game using the following username and the password you entered during registration:<br /><br />Username: %s<br />Password: %s</p><br /><br />Kind regards,<br />Your PokerTH Team",
+						$data['name'],
+						$data['sitename'],
+						$data['activate'],
+						$data['siteurl'],
+						$data['name'],
+						$password
+					);
+			
+			// Send the registration email.
+			$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $email, $emailSubject, $emailBody, true, null, $config->get('mailfrom')); // @FIXME: for the start send bcc copies to webmaster - disable it later!?
+	
+			if ( $return !== true ) {
+				$status = "nok";
+				$response = "mail not sent";
+				//mDebug('Error sending email: ' . $return->__toString());
+			} else {
+				$status = "ok";
+				$response = "mail sent";
+				//mDebug('Mail sent');
+			}
+		}else{
+			$status = "nok";
+			$response = "data not stored in db - mail will not be sent";
 		}
-		
-		
-		// @XXX: creating a forum account will be done, when email address is validated
 
-		return json_encode(array("status" => "ok", "response" => $res));
+		return json_encode(array("status" => $status, "response" => $response));
 	 }
 
 
@@ -140,9 +156,7 @@ class PthRankingModelWebservice extends JModelItem
         $username = $jinput->get('pthusername', "", 'STRING');
 		
 		if($username == "") return json_encode(array("status" => "nok", "reason" => "username empty"));
-         
         $db = $this->mydb();
-        
         $query = $db->getQuery(true);
         $query->select('player_id,username');
         $query->from('#__player');

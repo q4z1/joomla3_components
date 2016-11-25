@@ -18,9 +18,8 @@ defined('_JEXEC') or die('Restricted access');
 class PthRankingViewEmailval extends JViewLegacy
 {
 	
-	protected $submit = false;
-	protected $exists = false;
-
+	protected $act_key;
+	protected $success = false;
 	
 	/**
 	 * Display the view
@@ -31,21 +30,24 @@ class PthRankingViewEmailval extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
+		$uri = JUri::getInstance();
+		$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 		$jinput = JFactory::getApplication()->input;
-		$this->submit = $jinput->get('submit', false, 'BOOL');
+		$this->act_key = $jinput->get('actkey', "", 'ALNUM');
 		
-		if($this->submit){
+		if($this->act_key != ""){
+			// validate the activation key - and output success or fail
+			$this->success = $this->get("DoValidation");
+			if($this->success){
+				$this->msg = '<p>Congratulations!</p><p>Your E-Mail address is validated.</p><p>You can now login to the Game and to the <a href="'
+					. $base . '">Forum</a> with your login credentials mentioned in the mail you received before.</p><p>Enjoy the game! ;)</p>';
+			}else{
+				$this->msg = "Error: There is no match with the activation key entered below!";
+			}
 
 		}else{
-
+			// nothing to do - just show the validation site with an input field for the activation key
 		}
-		
-        
-        
-		// Assign data to the view
-        
-        
-		$this->msg = 'PokerTH ranking - registration view - submit = ' .var_export($this->submit, true);
  
 		// Display the view
 		parent::display($tpl);

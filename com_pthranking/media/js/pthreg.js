@@ -11,7 +11,7 @@ document.onreadystatechange = () => {
           console.log("#pthreg clicked.");
           // check Username
           jQuery.get(
-            "index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+jQuery("#pthranking-username").val()).done(
+            "/index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+jQuery("#pthranking-username").val()).done(
             function(data){
               console.log("checkusername response="+data);
               var obj = JSON.parse(data);
@@ -107,11 +107,18 @@ function validate_inputs(){
             ).done(
               function(data){
                 console.log("post done - response="+data);
-                // just debug output - redirect to email validation page should follow
-                jQuery('#errors').html("<ul class='text-success'><li>post done - response="+data+"</li></ul>");
+                // reset form fields
+                jQuery('#pthsignup-form')[0].reset();
+                // show success message
+                jQuery('#errors').html("<ul class='text-success'><li>Registration done! An E-Mail has been sent to you!</li></ul>");
                   jQuery('html, body').animate({
                       scrollTop: jQuery("#errors").offset().top - 50
                   }, 500);
+                  // redirect to emailvalidation page
+                window.setTimeout(
+                  function(){ window.location.href = '/component/pthranking/?view=emailval' },
+                  2500
+                );
               }
             );
 
