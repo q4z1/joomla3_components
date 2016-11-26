@@ -1,9 +1,1 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata>
-	<layout title="COM_PTHRANKING_PTHRANKING_VIEW_DEFAULT_TITLE">
-		<message>COM_PTHRANKING_PTHRANKING_VIEW_DEFAULT_DESC</message>
-	</layout>
-	<layout title="COM_PTHRANKING_PTHRANKING_VIEW_CURRENT_TITLE">
-		<message>COM_PTHRANKING_PTHRANKING_VIEW_CURRENT_DESC</message>
-	</layout>
-</metadata>
