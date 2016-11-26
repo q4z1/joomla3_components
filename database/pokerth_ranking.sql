@@ -139,7 +139,7 @@ BEGIN
   DECLARE xscore INT;
   SET inactivity_malus=0;
   SET xscore=calc_average_score(points,games);
-  SET xscore=ROUND(xscore*(10000.0+games)/10000.0); -- small game bonus
+  SET xscore=ROUND(xscore*(10000.0+LEAST(500,games))/10000.0); -- small game bonus , TODO: max 500 games
   IF games<1 THEN
     RETURN(-1);
   END IF;
