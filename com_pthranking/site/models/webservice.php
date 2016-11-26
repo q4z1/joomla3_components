@@ -338,12 +338,9 @@ class PthRankingModelWebservice extends JModelItem
     }
 
 
-
-    public function getSeasonPie()
+    public function PieData($seasononly=FALSE) // not to be used for get["..."] directly
     {
-        $seasononly=TRUE; // False means all-time
-//         $return_data=TRUE; // should we return the main data
-//         $return_png_url=TRUE; // should we return url for pie graph
+//         $seasononly=TRUE; // False means all-time - TODO: make as an parameter
 
         $db=$this->mydb();
 
@@ -433,6 +430,56 @@ class PthRankingModelWebservice extends JModelItem
         return json_encode($ret);
         // TODO: maybe return object/array is too complicated?
     }
+
+    public function getSeasonPie()
+    {
+        return $this->PieData(TRUE);
+    }
+
+    public function getAlltimePie()
+    {
+        return $this->PieData(FALSE);
+    }
+
+    public function getBasicInfo()
+    {
+        $db=$this->mydb();
+
+        $this->set_user_id_pair(); // reading parameters userid and username
+
+        $query = $db->getQuery(true);
+        $query->select('*, rank(final_score,season_games,player_id) AS myrank');
+        $query->from('#__player_ranking');
+        $query->where('player_id'. " = ".$this->currentid);
+        $db->setQuery($query);
+        $ret=array();
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0)
+        {
+            $row=$rows[0];
+            $ret["final score"]=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
+            $ret["average score"]=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
+            $ret["points sum"]=$row->points_sum;
+            $ret["username"]=$row->username;
+            $ret["playerid"]=$row->player_id;
+            $ret["season games"]=$row->season_games;
+            $ret["games seven days"]=$row->games_seven_days;
+            $ret["rank"]=$row->myrank;
+            // TODO: more in-between calculation, bonus/malus explained
+        }
+        return json_encode($ret);
+    }
+
+    public function getProfile() // maybe not needed
+    {
+        // collecting the single parts and putting it in one ass.array
+        $ret=array();
+        $ret["basic"]=json_decode($this->getBasicInfo());
+        $ret["seasonpie"]=json_decode($this->getSeasonPie());
+        $ret["alltimepie"]=json_decode($this->getAlltimePie());
+        return json_encode($ret);
+    }
+
 }
 
 // TODO AlltimePie
