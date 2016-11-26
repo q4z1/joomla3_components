@@ -51,12 +51,11 @@ $user = JFactory::getUser();
             <input type="submit" name="pthbtn" id="pthact" class="button" value="Activate">
          </fieldset>
         </form>
-        <p>*) mandatory fields</p>
+        <p id="pthmand">*) mandatory fields</p>
         </div>
     </div>
     <div class="rt-grid-6">
         <div class="rt-block">
-        <h3>Explanation of game-account activation for existing forum users:</h3>
         <p>Here you can activate your forum-account for game.</p>
         <p>Just re-enter your existing password and optionally choose a gender and a country.</p>
         <p>Your account will then be activated for the login to the game.</p>

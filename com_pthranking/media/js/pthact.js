@@ -46,6 +46,8 @@ document.onreadystatechange = () => {
                               scrollTop: jQuery("#errors").offset().top - 50
                           }, 500);
                           // @TODO: remove the form
+                          jQuery( "#pthactivategame-form" ).remove();
+                          jQuery( "#pthmand" ).remove();
                        }
                     );
                 }
