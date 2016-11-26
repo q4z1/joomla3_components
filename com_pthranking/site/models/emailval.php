@@ -77,30 +77,101 @@ class PthRankingModelEmailval extends JModelItem
             $db->setQuery($query);
             $result = $db->execute();
             
-            // @TODO: create forum account
-            
-			/*
-				CREATE TABLE `j25_users` (
-				  `id` int(11) NOT NULL,
-				  `name` varchar(400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-				  `username` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-				  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-				  `password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-				  `block` tinyint(4) NOT NULL DEFAULT '0',
-				  `sendEmail` tinyint(4) DEFAULT '0',
-				  `registerDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-				  `lastvisitDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-				  `activation` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-				  `params` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-				  `lastResetTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of last password reset',
-				  `resetCount` int(11) NOT NULL DEFAULT '0' COMMENT 'Count of password resets since lastResetTime',
-				  `otpKey` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Two factor authentication encrypted keys',
-				  `otep` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'One time emergency passwords',
-				  `requireReset` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Require user to reset password on next login'
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-			 */
-        }
+            // create entry in #__users table
+			
+			// create a joomla3 encrypted password
+			jimport('joomla.user.helper');
+			$joomla3password = JUserHelper::hashPassword($player_entry->password);
+			
+            $db = JFactory::getDBO();
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			
+			// Insert columns.
+			$columns = array(
+				'name',
+				'username',
+				'email',
+				'password',
+				'registerDate',
+				'params',
+			);
+			 
+			// Insert values.
+			$values = array(
+				$db->quote($player_entry->username),
+				$db->quote($player_entry->username),
+				$db->quote($player_entry->email),
+				$db->quote($joomla3password),
+				$db->quote(date("Y-m-d H:i:s")),
+				$db->quote("{}"),
+			);
+			
+			// Prepare the insert query.
+			$query
+				->insert($db->quoteName('#__users'))
+				->columns($db->quoteName($columns))
+				->values(implode(',', $values));
+			 
+			// Set the query using our newly populated query object and execute it.
+			$db->setQuery($query);
+			$res = $db->execute();
+			
+			if($res){
+				$userid = $db->insertid(); // fetch last insert id
+				
+				// entry in `#__user_usergroup_map` table necessary
+				$query = $db->getQuery(true);
+				// Insert columns.
+				$columns = array(
+					'user_id',
+					'group_id',
+				);
+				// Insert values.
+				$values = array(
+					$userid,
+					2,
+				);
+				// Prepare the insert query.
+				$query
+					->insert($db->quoteName('#__user_usergroup_map'))
+					->columns($db->quoteName($columns))
+					->values(implode(',', $values));
+				 
+				// Set the query using our newly populated query object and execute it.
+				$db->setQuery($query);
+				$res = $db->execute();
 
+				// create entry in #__kunenan_users table
+				$query = $db->getQuery(true);
+				
+				// Insert columns.
+				$columns = array(
+					'userid',
+					'signature',
+					'personalText',
+					'ip',
+				);
+				
+				// Insert values.
+				$values = array(
+					$userid,
+					"NULL",
+					"NULL",
+					$db->quote($_SERVER['REMOTE_ADDR']),
+				);
+				
+				// Prepare the insert query.
+				$query
+					->insert($db->quoteName('#__kunena_users'))
+					->columns($db->quoteName($columns))
+					->values(implode(',', $values));
+				 
+				// Set the query using our newly populated query object and execute it.
+				$db->setQuery($query);
+				$res = $db->execute();
+			}
+        }
         return $return;
 	}
 
