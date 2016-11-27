@@ -117,11 +117,12 @@ class PthRankingModelWebservice extends JModelItem
 			);
 			// @XXX: text for activation email
 			$emailBody = JText::sprintf(
-						"<h3>Hello %s,</h3>\n\n<p>Thank you for registering for the game at %s.</p>\n\n<p>Your game-account is created and must be activated before you can use it.</p>\n\n<p>To activate the game-account select the following link or copy-paste it in your browser:\n\n<br /><a href='%s'>%s</a></p>\n\n<p>After activation you may login to the <a href='%s'>Forum</a> and to the Game using the following username and the password you entered during registration:\n\n<br /><br />Username: %s<br />\n\nPassword: %s</p><br /><br />\n\nKind regards,<br />\n\nYour PokerTH Team",
+						"<h3>Hello %s,</h3>\n\n<p>Thank you for registering for the game at %s.</p>\n\n<p>Your game-account is created and must be activated before you can use it.</p>\n\n<p>To activate the game-account select the following link or copy-paste it in your browser:\n\n<br /><br /><a href='%s'>%s</a></p>\n\n<p>You can also enter your activation-code manually on the site shown after registration:<br /><br />\n\n%s</p>\n\n<p>After activation you may login to the <a href='%s'>Forum</a> and to the Game using the following username and the password you entered during registration:\n\n<br /><br />Username: %s<br />\n\nPassword: %s</p><br /><br />\n\nKind regards,<br />\n\nYour PokerTH Team",
 						$data['name'],
 						$data['sitename'],
 						$data['activate'],
 						$data['activate'],
+						$act_key,
 						$data['siteurl'],
 						$data['name'],
 						$password
