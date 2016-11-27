@@ -75,7 +75,7 @@ $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', fa
         to the new login-system (info in the forum will follow).<br />
         A forum-account will be created with this registration in parallel too - so you can just login to the forum after the email validation.
         </p>
-        <p>For those who already have a forum-account, you can activate your account for the game <a href="<#>?php echo $url ?>">here</a> (you have to be logged in).</p>
+        <p>For those who already have a forum-account, you can activate your account for the game <a href="<?php echo $url ?>">here</a> (you have to be logged in).</p>
         </div>
     </div>
 </div>
