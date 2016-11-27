@@ -301,7 +301,6 @@ class PthRankingViewActivategame extends JViewLegacy
 	function display($tpl = null)
 	{
 		$this->game_acc_exists = $this->get("CheckGameAcc");
-		mDebug("game_acc_exists = ".var_export($this->game_acc_exists,true));
 		
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

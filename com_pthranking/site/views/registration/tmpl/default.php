@@ -13,6 +13,9 @@ defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScript(JUri::root() . 'media/com_pthranking/js/pthreg.js');
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css');
+$uri = JUri::getInstance();
+$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
+$url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', false);
 ?>
 
 <div class="rt-flex-container">
@@ -65,15 +68,14 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
         <div class="rt-block">
         <h3>Explanation of new login-/ranking registration:</h3>
         <p>Here you can register for the new login-/ranking system of pokerth.net</p>
-        <p>This registration page is for players <bold>who don't yet have a forum account</bold>.</p>
-        <p>If your chosen username is already taken you will get a hint.</p>
+        <p>This registration page is for players who don't yet have a forum account.</p>
+        <p>If your chosen username/email-address is already taken you will get a hint.</p>
         <p>After clicking on the Register Button you will get an email in order to validate your email-address.<br />
         After successfully validating your email-address you will have access to the game with your credentials in the moment we switch the game-server
-        to the new login-system.<br />
+        to the new login-system (info in the forum will follow).<br />
         A forum-account will be created with this registration in parallel too - so you can just login to the forum after the email validation.
         </p>
-        <p>For those <bold>who already have a forum-account</bold>, you will need to enter a password for the game-server, as it is
-        not possible to use the existing forum-account password due to technical reasons.<br />Please login to the forum and move <a href="#">here</a> in order to enter a password for entering the game in the future.</p>
+        <p>For those who already have a forum-account, you can activate your account for the game <a href="<#>?php echo $url ?>">here</a> (you have to be logged in).</p>
         </div>
     </div>
 </div>

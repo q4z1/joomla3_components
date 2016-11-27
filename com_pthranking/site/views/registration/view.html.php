@@ -301,6 +301,15 @@ class PthRankingViewRegistration extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
+        $user = JFactory::getUser();
+        if(!$user->guest){
+			$uri = JUri::getInstance();
+			$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
+			$url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', false);
+            header("Location: $url");
+			die();
+        }
+		
 		
 		// @TODO: clause for $this->submit no longer needed as the post will be done by webservice and the redirect to email val by jQuery
 		$jinput = JFactory::getApplication()->input;

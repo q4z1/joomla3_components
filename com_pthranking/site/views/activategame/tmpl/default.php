@@ -14,12 +14,15 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
 $document->addScript(JUri::root() . 'media/com_pthranking/js/pthact.js');
 $user = JFactory::getUser();
 ?>
-<h3>Game-Account Activation for existing Forum-Users:</h3>
+
 <?php if($user->guest): ?>
+<h3>Game-Account Activation for existing Forum-Users:</h3>
 <div id="errors"><ul class="text-danger"><li>You need to be logged in!</li></ul></div>
 <?php elseif($this->game_acc_exists): ?>
+<h3>Game-Account Activation for your username <?php echo $user->username ?>:</h3>
 <div id="errors"><ul class="text-danger"><li>You already activated your game-account!</li></ul></div>
 <?php else: ?>
+<h3>Game-Account Activation for your username <?php echo $user->username ?>:</h3>
 <div class="rt-flex-container">
     <div class="rt-grid-6">
         <div class="rt-block">
@@ -56,7 +59,7 @@ $user = JFactory::getUser();
     </div>
     <div class="rt-grid-6">
         <div class="rt-block">
-        <p>Here you can activate your forum-account for game.</p>
+        <p>Here you can activate your forum-account for the game.</p>
         <p>Just re-enter your existing password and optionally choose a gender and a country.</p>
         <p>Your account will then be activated for the login to the game.</p>
         </div>
