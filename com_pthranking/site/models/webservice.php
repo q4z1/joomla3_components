@@ -297,6 +297,34 @@ class PthRankingModelWebservice extends JModelItem
 		if($res){
 			$status = "ok";
 			$response = "forum account transfered to ranking player table";
+			
+			$player_id = $db->insertid(); // fetch last insert id
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			
+			// Insert columns.
+			$columns = array(
+				'player_id',
+				'username',
+			);
+			 
+			// Insert values.
+			$values = array(
+				$db->quote($player_id),
+				$db->quote($user->username),
+			);
+			
+			// Prepare the insert query.
+			$query
+				->insert($db->quoteName('#__player_ranking'))
+				->columns($db->quoteName($columns))
+				->values(implode(',', $values));
+			 
+			// Set the query using our newly populated query object and execute it.
+			$db->setQuery($query);
+			$res = $db->execute();
+			
+			
 		}else{
 			$status = "nok";
 			$response = "forum account NOT transfered to ranking player table";

@@ -63,7 +63,7 @@ class PthRankingModelEmailval extends JModelItem
         
         
         if($return === true){
-            // @TODO: set active to 1
+            // @XXX: set active to 1
             $query = $db->getQuery(true);
             // Fields to update.
             $fields = array(
@@ -76,6 +76,32 @@ class PthRankingModelEmailval extends JModelItem
             $query->update($db->quoteName('#__player'))->set($fields)->where($conditions);
             $db->setQuery($query);
             $result = $db->execute();
+			
+			// @XXX: create entry in #__player_ranking
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			
+			// Insert columns.
+			$columns = array(
+				'player_id',
+				'username',
+			);
+			 
+			// Insert values.
+			$values = array(
+				$db->quote($player_entry->player_id),
+				$db->quote($player_entry->username),
+			);
+			
+			// Prepare the insert query.
+			$query
+				->insert($db->quoteName('#__player_ranking'))
+				->columns($db->quoteName($columns))
+				->values(implode(',', $values));
+			 
+			// Set the query using our newly populated query object and execute it.
+			$db->setQuery($query);
+			$res = $db->execute();
             
             // create entry in #__users table
 			
@@ -83,7 +109,7 @@ class PthRankingModelEmailval extends JModelItem
 			jimport('joomla.user.helper');
 			$joomla3password = JUserHelper::hashPassword($player_entry->password);
 			
-            $db = JFactory::getDBO();
+            $db = JFactory::getDBO(); // db object for joomla database
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			
