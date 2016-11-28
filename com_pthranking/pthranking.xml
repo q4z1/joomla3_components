@@ -11,7 +11,7 @@
 	<copyright>Copyright Info</copyright>
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
-	<version>0.0.30</version>
+	<version>0.0.2</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>PokerTH ranking component</description>
  
@@ -27,6 +27,7 @@
 		in this section are copied from /site/ in the package -->
 	<files folder="site">
 		<filename>index.html</filename>
+		<filename>defines.php</filename>
 		<filename>pthranking.php</filename>
 		<filename>controller.php</filename>
 		<folder>views</folder>
