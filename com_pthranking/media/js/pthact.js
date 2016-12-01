@@ -1,4 +1,4 @@
-document.onreadystatechange = () => {
+document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
       jQuery("#pthact").click(function(event){
           jQuery('#errors').empty();

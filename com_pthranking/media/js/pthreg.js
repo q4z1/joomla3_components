@@ -1,6 +1,6 @@
 var usernameValid = false;
 
-document.onreadystatechange = () => {
+document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
       jQuery("#pthreg").click(function(event){
           jQuery('#errors').empty();

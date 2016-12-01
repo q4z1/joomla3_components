@@ -1,6 +1,6 @@
 var usernameValid = false;
 
-document.onreadystatechange = () => {
+document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
      alert('Hello earth');
      jQuery.get("?option=com_pthranking&task=webservice&format=raw&pthtype=rankingtable").done(
