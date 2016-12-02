@@ -310,7 +310,11 @@ class PthRankingViewRegistration extends JViewLegacy
 			die();
         }
 		
-		
+		// re-captcha:
+		JPluginHelper::importPlugin('captcha');
+		$dispatcher = JDispatcher::getInstance();
+		$dispatcher->trigger('onInit','dynamic_recaptcha');
+			
 		// @TODO: clause for $this->submit no longer needed as the post will be done by webservice and the redirect to email val by jQuery
 		$jinput = JFactory::getApplication()->input;
 		$this->submit = $jinput->get('submit', false, 'BOOL');

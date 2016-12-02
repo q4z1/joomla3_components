@@ -43,13 +43,25 @@ class PthRankingModelWebservice extends JModelItem
 		$return = false;
 		$response = "unspecified";
 		$status = "nok";
-		
+				
 		$jinput = JFactory::getApplication()->input;
+		
+		$recaptcha_response_field =  $jinput->post->get('recaptcha_response_field', '', 'STRING');
+		
+		// re-captcha
+		$post = JRequest::get('post');      
+		JPluginHelper::importPlugin('captcha');
+		$dispatcher = JDispatcher::getInstance();
+		$res = $dispatcher->trigger('onCheckAnswer',$post['recaptcha_response_field']);
+		if(!is_array($res) || count($res) == 0 || !$res[0]){
+			return json_encode(array("status" => "nok", "response" => "re-captcha response wrong"));
+			//die('Invalid Captcha');
+		}
 		
 		$submit = $jinput->post->get('submit', false, 'BOOL');
 		
 		if(!$submit){
-			return json_encode(array("status" => "nok", "reason" => "submit not set or false"));
+			return json_encode(array("status" => "nok", "response" => "submit not set or false"));
 		}
 		
 		$email = $jinput->post->get('email', "", 'STRING');

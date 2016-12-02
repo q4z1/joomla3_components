@@ -19,7 +19,7 @@ $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', fa
 ?>
 
 <div class="rt-flex-container">
-    <div class="rt-grid-6">
+    <div class="rt-grid-7">
         <div class="rt-block">
             <div id="errors"></div>
         <form action="" method="post" id="pthsignup-form">
@@ -57,6 +57,9 @@ $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', fa
                     <?php endforeach; ?>
                 </select>
             </p>
+            <p>
+                <div id="dynamic_recaptcha"></div>
+            </p>
             <input type="hidden" name="submit" value="true" />
             <input type="submit" name="pthbtn" id="pthreg" class="button" value="Register">
          </fieldset>
@@ -64,7 +67,7 @@ $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', fa
         <p>*) mandatory fields</p>
         </div>
     </div>
-    <div class="rt-grid-6">
+    <div class="rt-grid-5">
         <div class="rt-block">
         <h3>Explanation of new login-/ranking registration:</h3>
         <p>Here you can register for the new login-/ranking system of pokerth.net</p>
