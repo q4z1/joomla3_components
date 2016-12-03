@@ -1,5 +1,6 @@
 var page=1;
-var size=50; 
+var size=50;
+var max_page = 0;
 
 
 document.onreadystatechange = function() {
@@ -65,7 +66,8 @@ function display_search_result(data){
   objects = JSON.parse(data);
   var pagination = objects.pagination;
   page = pagination.page;
-  jQuery("#pagenum").html(page);
+  max_page = pagination.max_page;
+  jQuery("#pagenum").html("page: "+page+ " of " + max_page);
   
   buildHtmlTable('#ranking_table',objects);
 }
@@ -92,7 +94,6 @@ function loadnext(){
 
 function loadpage(pagenumber,pagesize) {
   if (pagenumber<1) pagenumber=1;
-  jQuery("#pagenum").html("page: "+pagenumber);
   var start=(pagenumber-1)*pagesize+1;
   jQuery.get("?option=com_pthranking&task=webservice&format=raw&pthtype=rankingtable&start="+start+"&size="+pagesize).done(
     function(data){
@@ -122,7 +123,9 @@ function buildHtmlTable(selector,data) {
     var columns=["rank","username","average_points","season_games","final_score"];
     jQuery(selector).empty();
     jQuery(selector).html(titlerow);
-    
+    max_page = data.pagination.max_page;
+    page = data.pagination.page;
+    jQuery("#pagenum").html("page: "+page+" of " + max_page);
     var myList = data.table;
     for (var i = 0 ; i < myList.length ; i++) {
         var row$ = jQuery('<tr/>');

@@ -349,6 +349,7 @@ class PthRankingModelWebservice extends JModelItem
         $jinput = JFactory::getApplication()->input;
         $start= $jinput->get('start',0,'INT');
         $size= $jinput->get('size',0,'INT');
+		$username = $jinput->get('username',"",'STRING');
 		
 		$num_total = 0;
 		$max_page = 0;
@@ -408,7 +409,11 @@ class PthRankingModelWebservice extends JModelItem
         $rank=$start;
         foreach($rows as $row) {
             $tableentry=array(); // associative array, maybe dict/object?
-            $tableentry["username"]=$row->username;
+			if($row->username == $username){
+				$tableentry["username"] = "<span class='text-success'>".$row->username."</span>";
+			}else{
+				$tableentry["username"]=$row->username;
+			}
             $final_score=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
             $tableentry["final_score"]=$final_score;
 //             $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));

@@ -10,8 +10,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161203_1806');
-// $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css');
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161203_1841');
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css');
 $uri = JUri::getInstance();
 $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 // $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', false);
@@ -34,15 +34,5 @@ $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
             </div>
     </div>
 </div>
-<!--
-<h1>Ranking</h1>
 
-<p id="pagenum"></p>
-
-<button id="but_prev" onclick="loadprev();">Previous</button>
-<button id="but_next" onclick="loadnext();">Next</button>
-
-<table id="ranking_table" border=1>
-</table>
--->
 
