@@ -93,7 +93,6 @@ class PthRankingModelWebservice extends JModelItem
 			$db->quote($act_key), // maybe a shorter activation key for email validation?
 		);
 		
-		// Prepare the insert query.
 		$query
 			->insert($db->quoteName('#__player'))
 			->columns($db->quoteName($columns))
@@ -346,7 +345,6 @@ class PthRankingModelWebservice extends JModelItem
 
 	public function getRankingTable()
 	{
-
         //
         $jinput = JFactory::getApplication()->input;
         $start= $jinput->get('start',0,'INT');
@@ -358,8 +356,18 @@ class PthRankingModelWebservice extends JModelItem
         if($size<=0) $size=50;
         if($start<=0) $start=1;
 
-        // TODO: maybe get from input/jinput like in webservice
-        
+        $searchplayer=$jinput->get('searchplayer',0,'INT');
+        if($searchplayer==1)
+        {
+          $basicinfo=json_decode($this->getBasicInfo(),true);
+          if(count($basicinfo)==0)
+          {
+            return(json_encode(array()));
+          }
+          $rank=(int)($basicinfo["rank"]);
+          $start=$rank-(($rank-1)%$size); // adjust to start of page
+        }
+
         $db=$this->mydb();
         
         $return=false;
@@ -537,7 +545,8 @@ class PthRankingModelWebservice extends JModelItem
           $retdata[]=$retrow;
         }
         $url_data=implode(",",array_slice($place_count,1,10));
-        $return_url=array("pic1.php?d=".$url_data,"pic1.php?t=".$url_data);
+        $return_url=array("pic1.php?d=".$url_data,"pic1.php?t=1&d=".$url_data);
+        // TODO: modify according to graphics view
         $retrow=array();
         $retrow["place"]="sum";
         $retrow["count"]=$place_count[0]; // TODO: maybe everything as string
@@ -561,7 +570,7 @@ class PthRankingModelWebservice extends JModelItem
         return $this->PieData(FALSE);
     }
 
-    public function getBasicInfo()
+    public function getBasicInfo() // gets also used by getRankingTable
     {
         $db=$this->mydb();
 
@@ -577,17 +586,19 @@ class PthRankingModelWebservice extends JModelItem
         if(is_array($rows) && count($rows) > 0)
         {
             $row=$rows[0];
-            $ret["final score"]=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
-            $ret["average score"]=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
-            $ret["points sum"]=$row->points_sum;
+            $ret["final_score"]=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
+//             $ret["average score"]=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
+            $ret["average_points"]=$average_points;
+            $ret["points_sum"]=$row->points_sum;
             $ret["username"]=$row->username;
             $ret["playerid"]=$row->player_id;
-            $ret["season games"]=$row->season_games;
-            $ret["games seven days"]=$row->games_seven_days;
+            $ret["season_games"]=$row->season_games;
+            $ret["games_seven_days"]=$row->games_seven_days;
             $ret["rank"]=$row->myrank;
             // TODO: more in-between calculation, bonus/malus explained
         }
-        return json_encode($ret);
+        return json_encode($ret,JSON_FORCE_OBJECT);
     }
 
     public function getProfile() // maybe not needed
