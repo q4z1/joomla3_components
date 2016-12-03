@@ -349,6 +349,10 @@ class PthRankingModelWebservice extends JModelItem
         $jinput = JFactory::getApplication()->input;
         $start= $jinput->get('start',0,'INT');
         $size= $jinput->get('size',0,'INT');
+		
+		$num_total = 0;
+		$max_page = 0;
+		$page = 1;
 
 
         $start=(int)$start;
@@ -370,6 +374,18 @@ class PthRankingModelWebservice extends JModelItem
 
         $db=$this->mydb();
         
+		// get num rows for pagination calc => e.g. page 1 of $max_page - will be added later
+        $query = $db->getQuery(true);
+        $query->select('COUNT(player_id) as num');
+        $query->from('#__player_ranking');
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0){
+			$num_total = $rows[0]->num;
+			$max_page = ceil($num_total / $size);
+			$page = ceil($start / $size);
+		}
+		
         $return=false;
         $start2=$start-1;
         // start query
@@ -404,8 +420,8 @@ class PthRankingModelWebservice extends JModelItem
             $table[]=$tableentry;
             $rank+=1;
         }
-
-       return json_encode($table);
+		$return = array("pagination" => array("page" => $page, "max_page" => $max_page, "size" => $size, "start" => $start), "table" => $table);
+       return json_encode($return);
 	}
 
     private function set_user_id_pair() // reads from jinput

@@ -4,19 +4,71 @@ var size=50;
 
 document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
-//      alert('Hello earth');
-//     start=(page-1)*size+1;
-//     jQuery.get("?option=com_pthranking&task=webservice&format=raw&pthtype=rankingtable&start="+start+"&size="+size).done(
-//        function(data){
-//          var obj = JSON.parse(data);
-//          jQuery('#ranking_table').html(data);
-//          buildHtmlTable('#ranking_table',obj);
-// 
-//        }
-//      );
+    jQuery('#btn-search').click(
+      function(event){
+        var ret = false;
+        event.preventDefault();
+        event.stopPropagation();
+        var username = jQuery('#username').val();
+        if(username == "") return ret;
+        jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=rankingtable&username="+username+"&searchplayer=1").done(
+          function(data){
+            display_search_result(data);
+          }                  
+        );
+        return ret;
+      }                          
+    );
+    
+    jQuery('#but_prev').click(
+      function(event){
+        var ret = false;
+        event.preventDefault();
+        event.stopPropagation();
+        loadprev();
+        return ret;
+      }                          
+    );
+    
+    jQuery('#but_next').click(
+      function(event){
+        var ret = false;
+        event.preventDefault();
+        event.stopPropagation();
+        loadnext();
+        return ret;
+      }                          
+    );
+    
+    jQuery('#username').keypress(function (e) {
+      // check enter-key
+      if (e.which == 13) {
+        var username = jQuery('#username').val();
+        if(username == "") return false;
+        jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=rankingtable&username="+username+"&searchplayer=1").done(
+          function(data){
+            display_search_result(data);
+          }                  
+        );
+      }
+    });
+
+    
     loadpage(page,size);
-  } // end if
+  } 
 };
+
+function display_search_result(data){
+  //console.log("data="+data);
+  // check for valid result
+  if(data == "[]") return; // username not found
+  objects = JSON.parse(data);
+  var pagination = objects.pagination;
+  page = pagination.page;
+  jQuery("#pagenum").html(page);
+  
+  buildHtmlTable('#ranking_table',objects);
+}
 
 // TODO: change webservice to calculate points
 // TODO: error if empty
@@ -24,7 +76,7 @@ document.onreadystatechange = function() {
 // TODO: enter page number possible
 // TODO: variable page sizes (maybe offer 25,50,100)
 // TODO: css, design!!
-// TODO: make webservice tell total number of pages
+// TODO: make webservice tell total number of pages => see result data porperty pagination
 // TODO: search by player
 
 function loadprev(){
@@ -66,11 +118,12 @@ function loadpage(pagenumber,pagesize) {
 
 // Builds the HTML Table out of myList.
 titlerow="<tr><th>Rank</th><th>Name</th><th>Average Points</th><th>Games (Season)</th><th>Score</th></tr>"
-function buildHtmlTable(selector,myList) {
+function buildHtmlTable(selector,data) {
     var columns=["rank","username","average_points","season_games","final_score"];
     jQuery(selector).empty();
     jQuery(selector).html(titlerow);
-
+    
+    var myList = data.table;
     for (var i = 0 ; i < myList.length ; i++) {
         var row$ = jQuery('<tr/>');
         for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
