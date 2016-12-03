@@ -1,68 +1,75 @@
-var usernameValid = false;
+var page=1;
+var size=50; 
+
 
 document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
-     alert('Hello earth');
-     jQuery.get("?option=com_pthranking&task=webservice&format=raw&pthtype=rankingtable").done(
-       function(data){
-         console.log("data = "+data);
-//          alert(data);
-         var obj = JSON.parse(data);
+//      alert('Hello earth');
+//     start=(page-1)*size+1;
+//     jQuery.get("?option=com_pthranking&task=webservice&format=raw&pthtype=rankingtable&start="+start+"&size="+size).done(
+//        function(data){
+//          var obj = JSON.parse(data);
 //          jQuery('#ranking_table').html(data);
-         buildHtmlTable('#ranking_table',obj);
-
-
-       }
-     );
-
- 
-        
-//       jQuery("#pthreg").click(function(event){
-//           jQuery('#errors').empty();
-//           usernameValid = false;
-//           var ret = false;
-//           event.preventDefault();
-//           event.stopPropagation();
-//           console.log("#pthreg clicked.");
-//           // check Username
-//           jQuery.get(
-//             "/index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+jQuery("#pthranking-username").val()).done(
-//             function(data){
-//               console.log("checkusername response="+data);
-//               var obj = JSON.parse(data);
-//               if(obj.status != "ok"){
-//                 // an error happened - how to handle it?
-//               }
-//               else{
-//                 if(obj.response == true){
-//                   // username already used - either in player table or in joomla forum user table!
-//                   // put a hint beside username - username already used!
-//                   console.log("username already used!");
-//                   jQuery('#errors').html("<ul class='text-danger'><li>Username is already used!</li></ul>");
-//                   jQuery('html, body').animate({
-//                       scrollTop: jQuery("#errors").offset().top - 50
-//                   }, 500);
-//                 }else{
-//                   // username is valid - validate the rest
-//                   usernameValid = true;
-//                   validate_inputs();
-//                 }
-//               }
-//             }
-//           );
-//           return ret;
-//       });
-  }
+//          buildHtmlTable('#ranking_table',obj);
+// 
+//        }
+//      );
+    loadpage(page,size);
+  } // end if
 };
 
+// TODO: change webservice to calculate points
+// TODO: error if empty
+// TODO: page from GET parameter
+// TODO: enter page number possible
+// TODO: variable page sizes (maybe offer 25,50,100)
+// TODO: css, design!!
+// TODO: make webservice tell total number of pages
+// TODO: search by player
 
-// var myList = [{"name" : "abc", "age" : 50},
-//               {"age" : "25", "hobby" : "swimming"},
-//               {"name" : "xyz", "hobby" : "programming"}];
+function loadprev(){
+  page-=1;
+  if(page<1) page=1;
+  loadpage(page,size);
+}
+
+function loadnext(){
+  page+=1;
+  loadpage(page,size);
+}
+
+function loadpage(pagenumber,pagesize) {
+  if (pagenumber<1) pagenumber=1;
+  jQuery("#pagenum").html("page: "+pagenumber);
+  var start=(pagenumber-1)*pagesize+1;
+  jQuery.get("?option=com_pthranking&task=webservice&format=raw&pthtype=rankingtable&start="+start+"&size="+pagesize).done(
+    function(data){
+    var obj = JSON.parse(data);
+    buildHtmlTable('#ranking_table',obj);
+  });
+
+}
+
+// document.getElementById("but_prev").onclick = function() {
+//   page-=1;
+//   if(page<1) page=1;
+//   loadpage(page,size);
+// };
+// 
+// document.getElementById("but_next").onclick = function() {
+//   page+=1;
+// //   if(page<1) page=1;
+//   loadpage(page,size);
+// };
+// 
+
 
 // Builds the HTML Table out of myList.
+titlerow="<tr><th>Rank</th><th>Name</th><th>Average Points</th><th>Games (Season)</th><th>Score</th></tr>"
 function buildHtmlTable(selector,myList) {
-    var columns = addAllColumnHeaders(myList, selector);
+    var columns=["rank","username","average_points","season_games","final_score"];
+    jQuery(selector).empty();
+    jQuery(selector).html(titlerow);
 
     for (var i = 0 ; i < myList.length ; i++) {
         var row$ = jQuery('<tr/>');
@@ -75,27 +82,8 @@ function buildHtmlTable(selector,myList) {
         }
         jQuery(selector).append(row$);
     }
-}
-
-// Adds a header row to the table and returns the set of columns.
-// Need to do union of keys from all records as some records may not contain
-// all records
-function addAllColumnHeaders(myList, selector)
-{
-    var columnSet = [];
-    var headerTr$ = jQuery('<tr/>');
-
-    for (var i = 0 ; i < myList.length ; i++) {
-        var rowHash = myList[i];
-        for (var key in rowHash) {
-            if (jQuery.inArray(key, columnSet) == -1){
-                columnSet.push(key);
-                headerTr$.append(jQuery('<th/>').html(key));
-            }
-        }
+    if (myList.length==0) {
+      jQuery(selector).append("<tr><td colspan=5>No data found</td></tr>");
     }
-    jQuery(selector).append(headerTr$);
-
-    return columnSet;
 }
 

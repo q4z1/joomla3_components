@@ -377,7 +377,7 @@ class PthRankingModelWebservice extends JModelItem
         if(is_array($rows) && count($rows) > 0){
 			$return = true;
 		}
-        if(!$return) return(json_encode(array("Error: nothing found")));
+        if(!$return) return(json_encode(array()));
 
         $table=array();
 
@@ -387,8 +387,10 @@ class PthRankingModelWebservice extends JModelItem
             $tableentry["username"]=$row->username;
             $final_score=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
             $tableentry["final_score"]=$final_score;
-            $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
-            $tableentry["average_score"]=$average_score;
+//             $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
+//             $tableentry["average_score"]=$average_score;
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
+            $tableentry["average_points"]=$average_points;
             $tableentry["season_games"]=$row->season_games;
             $tableentry["rank"]=$rank;
             $table[]=$tableentry;

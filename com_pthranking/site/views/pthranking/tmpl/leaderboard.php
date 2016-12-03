@@ -19,8 +19,19 @@ $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 
 <h1>Ranking</h1>
 
-<table id="ranking_table" border=1>
+<p id="pagenum"></p>
 
+<button id="but_prev" onclick="loadprev();">Previous</button>
+<button id="but_next" onclick="loadnext();">Next</button>
+
+<table id="ranking_table" border=1>
+<!--<tr>
+ <th>Rank</th>
+ <th>Name</th>
+ <th>Average Points</th>
+ <th>Games (Season)</th>
+ <th>Score</th>
+</tr> -->
 </table>
 <?php echo $this->msg; ?>
 
