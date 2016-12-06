@@ -31,7 +31,28 @@ $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
             <table class="table table-striped table-hover table-bordered" id="ranking_table">
                 
             </table>
-            </div>
+            <br />
+            <p>
+                <h4>Ranking calculation:</h4>
+                <ol>
+                    <li><b>Placement Points:</b><br />
+                        1. = 24 | 2. = 16 | 3. = 10 | 4. = 6 | 5. = 3 | 6. = 2 | 7. = 1
+                    </li>
+                    <li><b>Average Points:</b><br />
+                     (Placement Points of last 100 games played / number of games played (max.100))
+                    </li>
+                    <li><b>Score:</b><br />
+                     (Average Points * 100) / Community Average Points   
+                    </li>
+                    <li>Bonus:<br />
+                    (+ 0,01 % per game, maximum 5% at 500 games)
+                    </li>
+                    <li><b>First-30-Games-Malus:</b><br />
+                    (- 96,7% at 1st game reduced by 3,3% steps down to 0% at 31th game)
+                    </li>
+                </ol>
+            </p>
+        </div>
     </div>
 </div>
 
