@@ -53,9 +53,11 @@ document.onreadystatechange = function() {
         );
       }
     });
-
     
-    loadpage(page,size);
+    // @XXX: due to weird loading of jquery in joomla - load this jquery plugin when dom is loaded
+    jQuery.getScript("/media/com_pthranking/js/jquery.simplePagination.js?ts=20161207_0355", function(){
+      loadpage(page,size);
+    });
   } 
 };
 
@@ -103,20 +105,6 @@ function loadpage(pagenumber,pagesize) {
 
 }
 
-// document.getElementById("but_prev").onclick = function() {
-//   page-=1;
-//   if(page<1) page=1;
-//   loadpage(page,size);
-// };
-// 
-// document.getElementById("but_next").onclick = function() {
-//   page+=1;
-// //   if(page<1) page=1;
-//   loadpage(page,size);
-// };
-// 
-
-
 // Builds the HTML Table out of myList.
 titlerow="<tr><th>Rank</th><th>Name</th><th>Average Points</th><th>Games (Season)</th><th>Score</th></tr>"
 function buildHtmlTable(selector,data) {
@@ -125,7 +113,7 @@ function buildHtmlTable(selector,data) {
     jQuery(selector).html(titlerow);
     max_page = data.pagination.max_page;
     page = data.pagination.page;
-    jQuery("#pagenum").html("page: "+page+" of " + max_page);
+    //jQuery("#pagenum").html("page: "+page+" of " + max_page);
     var myList = data.table;
     for (var i = 0 ; i < myList.length ; i++) {
         var row$ = jQuery('<tr/>');
@@ -141,5 +129,29 @@ function buildHtmlTable(selector,data) {
     if (myList.length==0) {
       jQuery(selector).append("<tr><td colspan=5>No data found</td></tr>");
     }
+    build_pagination();
+}
+
+function build_pagination(){
+  //jQuery('.pagination a').each(function(i, item){jQuery(item).unbind('click');}); // unbind click events
+  //jQuery('.pagination').empty(); // remove current pagination
+  jQuery('.pagination').pagination({
+        pages: max_page,
+        currentPage: page,
+        displayedPages: 7,
+        selectOnClick: false,
+        onPageClick: function(pageNum){loadpage(pageNum, size);}
+  });
+  jQuery('.pagination a').each(function(i, item){
+    jQuery(item).click(
+      function(event){
+        var ret = false;
+        event.preventDefault();
+        event.stopPropagation();
+        
+        return ret;
+      }
+    );
+  });
 }
 
