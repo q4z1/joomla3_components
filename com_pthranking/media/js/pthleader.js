@@ -113,13 +113,11 @@ function buildHtmlTable(selector,data) {
     jQuery(selector).html(titlerow);
     max_page = data.pagination.max_page;
     page = data.pagination.page;
-    //jQuery("#pagenum").html("page: "+page+" of " + max_page);
     var myList = data.table;
     for (var i = 0 ; i < myList.length ; i++) {
         var row$ = jQuery('<tr/>');
         for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
             var cellValue = myList[i][columns[colIndex]];
-
             if (cellValue == null) { cellValue = ""; }
 
             row$.append(jQuery('<td/>').html(cellValue));
@@ -133,8 +131,7 @@ function buildHtmlTable(selector,data) {
 }
 
 function build_pagination(){
-  //jQuery('.pagination a').each(function(i, item){jQuery(item).unbind('click');}); // unbind click events
-  //jQuery('.pagination').empty(); // remove current pagination
+  jQuery('.pagination a').each(function(i, item){jQuery(item).unbind('click');}); // unbind click events
   jQuery('.pagination').pagination({
         pages: max_page,
         currentPage: page,
@@ -148,7 +145,6 @@ function build_pagination(){
         var ret = false;
         event.preventDefault();
         event.stopPropagation();
-        
         return ret;
       }
     );
