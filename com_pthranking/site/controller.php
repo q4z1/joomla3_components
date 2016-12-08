@@ -41,4 +41,14 @@ class PthRankingController extends JControllerLegacy
 
 		parent::display();
 	}
+
+    public function pthranking()
+    {
+        // 
+        // dunno if this is the right place
+        $view = $this->getView('PthRanking','html'); // TODO: maybe profile instead of html?
+        $view->setModel( $this->getModel('Webservice'),true);
+        $view->display();
+
+    }
 }
