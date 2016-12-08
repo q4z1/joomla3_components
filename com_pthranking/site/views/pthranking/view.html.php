@@ -40,15 +40,11 @@ class PthRankingViewPthRanking extends JViewLegacy
         $username=""; // TODO
 
         $this->testmsg = "hello sun";
-        echo "test1";
-//         $profiledata=json_decode($this->get('Profile'),true); // assoc array
 
-//         jimport('com_pthranking.models.webservice'); // TODO
-//         $profiledatajson= $this->get('Profile','Webservice');
 		$this->setModel(JModelLegacy::getInstance('Webservice', 'PthRankingModel'));
+
         $profiledatajson= $this->get('Profile', 'Webservice');
         $profiledata=json_decode($profiledatajson,true);
-        var_dump($profiledatajson);
         $basic = $profiledata["basic"];
         if(count($basic)>0) $this->userexists=true;
         else $this->userexists=false;
@@ -80,9 +76,9 @@ class PthRankingViewPthRanking extends JViewLegacy
             $html .= $basic["final_score"]."</td></tr>\n";
             
             $html .= "<tr><th>Rank:</th><td>";
-            $html .= $basic["ran"]."</td></tr>\n";
+            $html .= $basic["rank"]."</td></tr>\n";
             
-            $html="</table>\n";
+            $html .="</table>\n";
 
             $this->basicinfo_html=$html;
 
