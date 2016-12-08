@@ -45,7 +45,8 @@ class PthRankingViewPthRanking extends JViewLegacy
 
 //         jimport('com_pthranking.models.webservice'); // TODO
 //         $profiledatajson= $this->get('Profile','Webservice');
-        $profiledatajson= $this->get('Profile');
+		$this->setModel(JModelLegacy::getInstance('Webservice', 'PthRankingModel'));
+        $profiledatajson= $this->get('Profile', 'Webservice');
         $profiledata=json_decode($profiledatajson,true);
         var_dump($profiledatajson);
         $basic = $profiledata["basic"];

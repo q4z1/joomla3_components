@@ -44,11 +44,25 @@ class PthRankingController extends JControllerLegacy
 
     public function pthranking()
     {
+		// Set view
+		
+		// Joomla 2.5
+		JRequest::setVar('view', 'PthRanking');
+		
+		// (use JInput in 3.x)
+		$this->input->set('view', 'PthRanking');
+		
+		parent::display();
+		/*
         // 
         // dunno if this is the right place
-        $view = $this->getView('PthRanking','html'); // TODO: maybe profile instead of html?
-        $view->setModel( $this->getModel('Webservice'),true);
+        $view = $this->getView('PthRanking'); // TODO: maybe profile instead of html?
+		$model = $this->getModel('Webservice');
+		mDebug("model=\n".var_export($model,true));
+        $view->setModel( $model,true);
+
         $view->display();
+        */
 
     }
 }
