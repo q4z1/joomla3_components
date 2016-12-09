@@ -92,6 +92,16 @@ class PthRankingViewPthRanking extends JViewLegacy
             $seasonpie=$profiledata["seasonpie"]["data"]; // 
             $this->seasonpiedata= $this->pietohtml($seasonpie);
 
+            $urlprefix= "?view=graphics&format=png&layout=piechart&"; // TODO: check if this works
+//             $urlprefix= "?option=com_pthranking&view=graphics&format=png&layout=piechart&"; // TODO: use url for real pth
+            $seasonurls=$profiledata["seasonpie"]["url"];
+            $alltimeurls=$profiledata["alltimepie"]["url"];
+
+            $this->season_pie_pic="<img src=\"$urlprefix".$seasonurls[0]."\" width=120 height=120 alt=\"pie\">\n";
+            $this->season_bar_pic="<img src=\"$urlprefix".$seasonurls[1]."\" width=160 height=120 alt=\"bar\">\n";
+            $this->alltime_pie_pic="<img src=\"$urlprefix".$alltimeurls[0]."\" width=120 height=120 alt=\"pie\">\n";
+            $this->alltime_bar_pic="<img src=\"$urlprefix".$alltimeurls[1]."\" width=160 height=120 alt=\"bar\">\n";
+
             $alltimepie=$profiledata["alltimepie"]["data"]; // 
 
             $this->alltimepiedata= $this->pietohtml($alltimepie);

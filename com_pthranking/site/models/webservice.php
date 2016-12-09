@@ -568,7 +568,7 @@ class PthRankingModelWebservice extends JModelItem
           $retdata[]=$retrow;
         }
         $url_data=implode(",",array_slice($place_count,1,10));
-        $return_url=array("pic1.php?d=".$url_data,"pic1.php?t=1&d=".$url_data);
+        $return_url=array("d=".$url_data,"t=1&d=".$url_data);
         // TODO: modify according to graphics view
         $retrow=array();
         $retrow["place"]="sum";

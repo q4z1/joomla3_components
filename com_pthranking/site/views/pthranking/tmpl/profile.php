@@ -28,8 +28,12 @@ $document = JFactory::getDocument();
             
             <h3>Statistics for this season (beta phase 2016-12):</h3>
             <?php echo $this->seasonpiedata; ?>
+            <?php echo $this->season_pie_pic; ?>
+            <?php echo $this->season_bar_pic; ?>
             <h3>Statistics for all time:</h3>
             <?php echo $this->alltimepiedata; ?>
+            <?php echo $this->alltime_pie_pic; ?>
+            <?php echo $this->alltime_bar_pic; ?>
             <?php else: ?>
             <p>Player not found</p>
             
