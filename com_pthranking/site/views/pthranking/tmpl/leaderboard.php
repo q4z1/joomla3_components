@@ -10,9 +10,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161207_0414');
-$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css');
-$document->addStyleSheet(JUri::root() . 'media/kunena/cache/crypsis/css/kunena.css'); // needed for pagination styles
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161209_0209');
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161209_0219');
 $uri = JUri::getInstance();
 $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 // $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', false);

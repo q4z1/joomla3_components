@@ -52,7 +52,7 @@ class PthRankingViewPthRanking extends JViewLegacy
         if($this->userexists)
         {
             $this->username=$basic["username"];
-            $html="<table>\n";
+            $html="<table class='table table-striped table-hover table-bordered'>\n";
 
             $html .= "<tr><td>Name:</td><td>";
             $html .= $basic["username"]."</td></tr>\n";

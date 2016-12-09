@@ -108,7 +108,8 @@ class PthRankingModelWebservice extends JModelItem
 	
 			$data['name'] = $username;
 			$data['fromname'] = $config->get('fromname');
-			$data['mailfrom'] = $config->get('mailfrom');
+			//$data['mailfrom'] = $config->get('mailfrom');
+			$data['mailfrom'] = "account@pokerth.net";
 			$data['sitename'] = $config->get('sitename');
 			$data['siteurl'] = JUri::root();
 			$uri = JUri::getInstance();
@@ -410,7 +411,7 @@ class PthRankingModelWebservice extends JModelItem
         foreach($rows as $row) {
             $tableentry=array(); // associative array, maybe dict/object?
 			if($row->username == $username){
-				$tableentry["username"] = "<span class='text-success'>".$row->username."</span>";
+				$tableentry["username"] = "<span class='text-danger'>".$row->username."</span>";
 			}else{
 				$tableentry["username"]=$row->username;
 			}

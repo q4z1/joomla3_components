@@ -16,18 +16,23 @@ $document = JFactory::getDocument();
 // $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 // $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', false);
 ?>
-
-<?php if($this->userexists): ?>
-
-<h1><?php echo $this->username?> - Profile</h1>
-
-<h3>Ranking information about this season</h3>
-<?php echo $this->basicinfo_html; ?>
-
-<?php else: ?>
-<p>Player not found</p>
-
-<?php endif; ?>
+<div class="rt-flex-container">
+    <div class="rt-grid-12">
+        <div>
+            <?php if($this->userexists): ?>
+            
+            <h1>Profile: <?php echo $this->username?></h1>
+            
+            <h3>Ranking information about this season (beta phase 2016-12):</h3>
+            <?php echo $this->basicinfo_html; ?>
+            
+            <?php else: ?>
+            <p>Player not found</p>
+            
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
 
 
 

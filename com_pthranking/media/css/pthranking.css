@@ -1,7 +1,9 @@
-#errors .text-danger{ color: red;}
-#errors .text-success, #ranking_table span.text-success{ color: green;}
+#errors .text-danger, #ranking_table span.text-danger{ color: #8b0000;}
+#ranking_table span.text-danger:hover{ color: inherit!important; }
 
-#pthsignup-form sup.mandatory, #pthactivate-form sup.mandatory{ color: red; font-size: smaller;}
+#errors .text-success, #ranking_table span.text-success{ color: green!important;}
+#ranking_table span.text-success:hover{ color: inherit!important;}
+#pthsignup-form sup.mandatory, #pthactivate-form sup.mandatory{ color: #8b0000; font-size: smaller;}
 #pthemailval-form input[type=text]{
     width: 300px!important;
 }
