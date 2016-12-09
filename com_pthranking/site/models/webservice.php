@@ -420,6 +420,7 @@ class PthRankingModelWebservice extends JModelItem
 //             $tableentry["average_score"]=$average_score;
             $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
             $tableentry["average_points"]=$average_points;
+            $tableentry["userid"]=$row->player_id;
             $tableentry["season_games"]=$row->season_games;
             $tableentry["rank"]=$rank;
             $table[]=$tableentry;

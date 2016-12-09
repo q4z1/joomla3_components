@@ -119,8 +119,13 @@ function buildHtmlTable(selector,data) {
         for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
             var cellValue = myList[i][columns[colIndex]];
             if (cellValue == null) { cellValue = ""; }
-
-            row$.append(jQuery('<td/>').html(cellValue));
+            if(columns[colIndex]=="username") {
+                var profilelink="/component/pthranking/?view=pthranking&layout=profile&userid="+myList[i]["userid"];
+                row$.append(jQuery('<td/>').html("<a href=\""+profilelink+"\">"+cellValue+"</a>")); 
+            }
+            else {
+                row$.append(jQuery('<td/>').html(cellValue));
+            }
         }
         jQuery(selector).append(row$);
     }
