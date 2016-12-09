@@ -592,6 +592,29 @@ class PthRankingModelWebservice extends JModelItem
     {
         return $this->PieData(FALSE);
     }
+	
+	private function getLastFiveGames(){
+		$db=$this->mydb();
+        $query = $db->getQuery(true);
+        $query->select('place');
+        $query->from('#__game_has_player');
+        $query->where('player_idplayer'. " = ".$this->currentid);
+		$query->order('start_time DESC');
+		$query->setLimit('5');
+        $db->setQuery($query);
+        $ret=array();
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0)
+        {
+			$last5 = array();
+			foreach($rows as $row){
+				$last5[] = $row->place;
+			}
+			return json_encode($last5);
+		}else{
+			return json_encode(array());
+		}
+	}
 
     public function getBasicInfo() // gets also used by getRankingTable
     {
@@ -631,6 +654,7 @@ class PthRankingModelWebservice extends JModelItem
         $ret["basic"]=json_decode($this->getBasicInfo());
         $ret["seasonpie"]=json_decode($this->getSeasonPie());
         $ret["alltimepie"]=json_decode($this->getAlltimePie());
+		$ret["last5"]=json_decode($this->getLastFiveGames());
         return json_encode($ret);
     }
 

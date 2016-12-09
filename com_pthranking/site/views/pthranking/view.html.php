@@ -62,6 +62,13 @@ class PthRankingViewPthRanking extends JViewLegacy
 
             $html .= "<tr><td>Games:</td><td>";
             $html .= $basic["season_games"]."</td></tr>\n";
+			
+			if(array_key_exists("last5", $profiledata) && is_array($profiledata["last5"]) && count($profiledata["last5"]) > 0){
+				$html .= "<tr><td>Last 5 game places:</td><td>";
+				$html .= implode(", ", $profiledata["last5"]);
+				$html .= "</td></tr>\n";
+			}
+
             
             $html .= "<tr><td>Total points:</td><td>";
             $html .= $basic["points_sum"]."</td></tr>\n";
