@@ -26,6 +26,10 @@ $document = JFactory::getDocument();
             <h3>Ranking information about this season (beta phase 2016-12):</h3>
             <?php echo $this->basicinfo_html; ?>
             
+            <h3>Statistics for this season (beta phase 2016-12):</h3>
+            <?php echo $this->seasonpiedata; ?>
+            <h3>Statistics for all time:</h3>
+            <?php echo $this->alltimepiedata; ?>
             <?php else: ?>
             <p>Player not found</p>
             

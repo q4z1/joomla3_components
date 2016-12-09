@@ -89,8 +89,39 @@ class PthRankingViewPthRanking extends JViewLegacy
 
             $this->basicinfo_html=$html;
 
+            $seasonpie=$profiledata["seasonpie"]["data"]; // 
+            $this->seasonpiedata= $this->pietohtml($seasonpie);
+
+            $alltimepie=$profiledata["alltimepie"]["data"]; // 
+
+            $this->alltimepiedata= $this->pietohtml($alltimepie);
+
         }
 
         return;
+    }
+
+    function pietohtml($piedata)
+    {
+        $ret="<table border=1>\n"; // maybe removej
+        $row="<tr><td>Place:</td>";
+        $key="place";
+        foreach($piedata as $entry) $row.="<td>".$entry[$key]."</td>";
+        $row.="</tr>\n";
+        $ret.=$row;
+
+        $row="<tr><th>Games:</th>";
+        $key="count";
+        foreach($piedata as $entry) $row.="<td>".$entry[$key]."</td>";
+        $row.="</tr>\n";
+        $ret.=$row;
+
+        $row="<tr><td>Percent:</td>";
+        $key="percent";
+        foreach($piedata as $entry) $row.="<td>".$entry[$key]."</td>";
+        $row.="</tr>\n";
+        $ret.=$row;
+        $ret.="</table>";
+        return $ret;
     }
 }
