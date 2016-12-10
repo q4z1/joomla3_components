@@ -92,7 +92,9 @@ class PthRankingViewPthRanking extends JViewLegacy
             $seasonpie=$profiledata["seasonpie"]["data"]; // 
             $this->seasonpiedata= $this->pietohtml($seasonpie);
 
-            $urlprefix= "?view=graphics&format=png&layout=piechart&"; // TODO: check if this works
+			$uri = JUri::getInstance();
+			$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
+            $urlprefix= $base ."/component/pthranking/?view=graphics&format=png&layout=piechart&"; // TODO: check if this works
 //             $urlprefix= "?option=com_pthranking&view=graphics&format=png&layout=piechart&"; // TODO: use url for real pth
             $seasonurls=$profiledata["seasonpie"]["url"];
             $alltimeurls=$profiledata["alltimepie"]["url"];
@@ -113,7 +115,7 @@ class PthRankingViewPthRanking extends JViewLegacy
 
     function pietohtml($piedata)
     {
-        $ret="<table border=1>\n"; // maybe removej
+        $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
         $row="<tr><td>Place:</td>";
         $key="place";
         foreach($piedata as $entry) $row.="<td>".$entry[$key]."</td>";
