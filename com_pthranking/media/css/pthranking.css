@@ -7,3 +7,11 @@
 #pthemailval-form input[type=text]{
     width: 300px!important;
 }
+
+canvas.canvas-holder{
+    float: left;
+}
+
+canvas.half{
+    width: 50%!important;
+}

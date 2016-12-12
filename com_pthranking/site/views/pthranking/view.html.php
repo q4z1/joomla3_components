@@ -107,7 +107,14 @@ class PthRankingViewPthRanking extends JViewLegacy
             $alltimepie=$profiledata["alltimepie"]["data"]; // 
 
             $this->alltimepiedata= $this->pietohtml($alltimepie);
-
+			
+			// @XXX: season & alltime data for chart.js
+			$this->season_data = array();
+			$this->alltime_data = array();
+			for($i=0;$i<10;$i++){
+				$this->season_data[] = (int)$seasonpie[$i]["count"];
+				$this->alltime_data[] = (int)$alltimepie[$i]["count"];
+			}
         }
 
         return;
