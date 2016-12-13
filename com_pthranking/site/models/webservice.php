@@ -658,6 +658,80 @@ class PthRankingModelWebservice extends JModelItem
         return json_encode($ret);
     }
 
+    public function getGamingtable() // for click on players during games
+    {
+        // TODO: what args can appear?
+
+     // http://pokerth.net/component/pthranking/?view=pthranking&layout=profile&tableview=1&nick1=weinertb&nick2=Pheekreore&nick3=sasha&nick4=Ezza&nick5=yagiello&nick6=Miss%20Groves&nick7=zotti&nick8=szynser&nick9=MindReader&nick10=TheBrain&table=My%20Online%20Game456
+
+        $db=$this->mydb();
+        $nickinputs=array();
+        $nicksearches=array();
+        $jinput = JFactory::getApplication()->input;
+        $gamename=$jinput->get('table','','STRING');
+        $ret=array(); // assoc
+        $ret["gamename"]=$gamename;
+        $ret["table"]=array();
+        $ret["notfound"]=array();
+        for($i=1;$i<11;$i++)
+        {
+            $nickx = $jinput->get("nick$i","",'STRING');
+            if($nickx!="") {
+                $nickinputs[$i]=$nickx;
+                $nicksearches[]=$db->quote($nickx);
+            }
+        }
+        if(count($nickinputs)<=0)
+        {
+            return(json_encode($ret));
+        }
+        // ignore GET tableview=1
+
+        // TODO: sql query
+        $query = $db->getQuery(true);
+        $query->select('*, rank(final_score,season_games,player_id) AS myrank');
+        $query->from('#__player_ranking');
+        $query->where('username in ('.implode(',',$nicksearches).')');
+//         $query->order('myran'); // TODO: this or username?
+        $query->order('username');
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0)
+        {
+            $return = true;
+        }
+        else return(json_encode($ret));
+
+        $table=array();
+        foreach($rows as $row) {
+            $tableentry=array(); // assoc
+            $tableentry["username"]=$row->username;
+            for($i=1;$i<11;$i++) {
+                if(!(array_key_exists($i,$nickinputs))) continue;
+                if($nickinputs[$i]==$row->username) $nickinputs[$i]="";
+            } // remove found nicknames
+            $final_score=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
+            $tableentry["final_score"]=$final_score;
+//             $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
+//             $tableentry["average_score"]=$average_score;
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
+            $tableentry["average_points"]=$average_points;
+            $tableentry["userid"]=$row->player_id;
+            $tableentry["season_games"]=$row->season_games;
+            $tableentry["rank"]=$row->myrank;
+            $table[]=$tableentry;
+        }
+        $notfound=array();
+        for($i=1;$i<11;$i++) {
+            if(!(array_key_exists($i,$nickinputs))) continue;
+            if($nickinputs[$i]!="") $notfound[]=$nickinputs[$i];
+        }
+        $ret["table"]=$table;
+        $ret["notfound"]=$notfound;
+        return json_encode($ret);
+        // TODO: not found
+    }
+
 }
 
 // TODO AlltimePie
