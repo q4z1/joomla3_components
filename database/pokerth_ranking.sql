@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `game` (
   `name` varchar(64) NOT NULL,
   `start_time` datetime DEFAULT NULL,
   `end_time` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `game_has_player` (
   `player_idplayer` int(11) NOT NULL,
   `place` int(4) NOT NULL,
   `start_time` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS `player_ranking` (
   `season_games` int(11) NOT NULL DEFAULT '0',
   `average_score` int(13) NOT NULL DEFAULT '0',
   `games_seven_days` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- A view to see the simulated real world earnings and the efficiency.
