@@ -411,7 +411,7 @@ class PthRankingModelWebservice extends JModelItem
         $rank=$start;
         foreach($rows as $row) {
             $tableentry=array(); // associative array, maybe dict/object?
-			if($row->username == $username){
+			if(strtolower($row->username) == strtolower($username)){
 				$tableentry["username"] = "<span class='text-danger'>".$row->username."</span>";
 			}else{
 				$tableentry["username"]=$row->username;
