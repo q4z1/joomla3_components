@@ -51,12 +51,19 @@ class PthRankingViewPthRanking extends JViewLegacy
         
         if($this->userexists)
         {
-            $this->username=$basic["username"];
+            $this->username=$basic["username"] . " (" . $basic["gender"] 
+				. " / <img src='/media/flags_iso/" . $basic["country"] . ".png' alt='".$basic["country"] . "' />)";
             $html="<table class='table table-striped table-hover table-bordered'>\n";
 
             $html .= "<tr><td>Name:</td><td>";
             $html .= $basic["username"]."</td></tr>\n";
             
+            $html .= "<tr><th>Rank:</th><td>";
+            $html .= $basic["rank"]."</td></tr>\n";
+			
+            $html .= "<tr><th>Final Score:</th><td>";
+            $html .= $basic["final_score"]."</td></tr>\n";
+			
             $html .= "<tr><td>Player id:</td><td>";
             $html .= $basic["playerid"]."</td></tr>\n";
 
@@ -78,12 +85,6 @@ class PthRankingViewPthRanking extends JViewLegacy
             
             $html .= "<tr><td>Games last 7 days:</td><td>";
             $html .= $basic["games_seven_days"]."</td></tr>\n";
-            
-            $html .= "<tr><th>Final Score:</th><td>";
-            $html .= $basic["final_score"]."</td></tr>\n";
-            
-            $html .= "<tr><th>Rank:</th><td>";
-            $html .= $basic["rank"]."</td></tr>\n";
             
             $html .="</table>\n";
 

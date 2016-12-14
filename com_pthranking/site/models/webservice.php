@@ -626,9 +626,10 @@ class PthRankingModelWebservice extends JModelItem
         $this->set_user_id_pair(); // reading parameters userid and username
 
         $query = $db->getQuery(true);
-        $query->select('*, rank(final_score,season_games,player_id) AS myrank');
-        $query->from('#__player_ranking');
-        $query->where('player_id'. " = ".$this->currentid);
+        $query->select('pr.*, rank(pr.final_score,pr.season_games,pr.player_id) AS myrank, p.gender, p.country_iso');
+        $query->from('#__player_ranking as pr');
+		$query->join('LEFT', '#__player AS p ON p.player_id = pr.player_id');
+        $query->where('pr.player_id'. " = ".$this->currentid);
         $db->setQuery($query);
         $ret=array();
         $rows = $db->loadObjectList();
@@ -644,6 +645,8 @@ class PthRankingModelWebservice extends JModelItem
             $ret["playerid"]=$row->player_id;
             $ret["season_games"]=$row->season_games;
             $ret["games_seven_days"]=$row->games_seven_days;
+			$ret["country"] = $row->country_iso;
+			$ret["gender"] = $row->gender;
             $ret["rank"]=$row->myrank;
             // TODO: more in-between calculation, bonus/malus explained
         }
