@@ -392,8 +392,9 @@ class PthRankingModelWebservice extends JModelItem
         $start2=$start-1;
         // start query
         $query = $db->getQuery(true);
-        $query->select('*');
-        $query->from('#__player_ranking');
+        $query->select('pr.*, p.country_iso, p.gender');
+        $query->from('#__player_ranking AS pr');
+		$query->join('LEFT', '#__player AS p ON p.player_id = pr.player_id');
         $query->where('1');
         $query->order('final_score DESC, season_games DESC, player_id ASC');
         $query->setLimit($size,$start2);
@@ -424,6 +425,8 @@ class PthRankingModelWebservice extends JModelItem
             $tableentry["userid"]=$row->player_id;
             $tableentry["season_games"]=$row->season_games;
             $tableentry["rank"]=$rank;
+			$tableentry["gender"] = $row->gender;
+			$tableentry["country"] = $row->country_iso;
             $table[]=$tableentry;
             $rank+=1;
         }
