@@ -30,6 +30,7 @@ class PthRankingViewPthRanking extends JViewLegacy
 		$this->msg = 'PokerTH ranking - default view';
         $layout = $this->getLayout();
         if($layout=="profile") $this->prepareprofile();
+        if($layout=="gametable") $this->preparegametable();
  
 		// Display the view
 		parent::display($tpl);
@@ -143,5 +144,51 @@ class PthRankingViewPthRanking extends JViewLegacy
         $ret.=$row;
         $ret.="</table>";
         return $ret;
+    }
+
+    function preparegametable()
+    {
+
+		$this->setModel(JModelLegacy::getInstance('Webservice', 'PthRankingModel'));
+        $datajson= $this->get('gamingtable', 'Webservice');
+        $data=json_decode($datajson,true); // assoc
+        $table = $data["table"]; // arr
+        $this->gamename = $data["gamename"]; // str
+        $notfound = $data["notfound"]; // arr
+
+        $this->notfound="";
+
+        if(count($notfound)>0)
+        {
+
+            $html_notfound="<h4>Players not found in ranking:<h4>\n<ul>\n";
+            foreach($notfound as $player)
+            {
+                $html_notfound.="<li>".$player."</li>\n";
+            }
+            $html_notfound .="</ul>";
+            $this->notfound=$html_notfound;
+        }
+
+        $table_html="<table border=1>\n";
+        $table_html.="<tr><th>Name</th><td>avg. Points</td><td>games (season)</td>";
+        $table_html.="<th>Score</th><th>Rank</th></tr>\n";
+        $base_url="/component/pthranking/?view=pthranking&layout=profile&userid="; // TODO - change/check if correct
+//         $base_url="?option=com_pthranking&view=pthranking&layout=profile&userid="; // supernoob local testing link
+
+//                 var profilelink="/component/pthranking/?view=pthranking&layout=profile&userid="+myList[i]["userid"];
+        foreach($table as $entry)
+        {
+            $url=$base_url.$entry["userid"];
+            $table_html.="<tr><td><a href=\"$url\" target=\"_blank\">";
+            $table_html.= $entry["username"]."</a></td>\n";
+            $table_html.=" <td>".$entry["average_points"]."</td>";
+            $table_html.="<td>".$entry["season_games"]."</td>";
+            $table_html.="<td>".$entry["final_score"]."</td>";
+            $table_html.="<td>".$entry["rank"]."</td></tr>\n";
+        }
+        $table_html.="</table>\n";
+        $this->rankinginfo=$table_html;
+        return ;
     }
 }
