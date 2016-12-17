@@ -170,10 +170,12 @@ class PthRankingViewPthRanking extends JViewLegacy
             $this->notfound=$html_notfound;
         }
 
-        $table_html="<table border=1>\n";
+        $table_html="<table class='table table-striped table-hover table-bordered'>\n";
         $table_html.="<tr><th>Name</th><td>avg. Points</td><td>games (season)</td>";
         $table_html.="<th>Score</th><th>Rank</th></tr>\n";
-        $base_url="/component/pthranking/?view=pthranking&layout=profile&userid="; // TODO - change/check if correct
+		$uri = JUri::getInstance();
+		$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
+        $base_url=$base."/component/pthranking/?view=pthranking&layout=profile&userid="; // TODO - change/check if correct
 //         $base_url="?option=com_pthranking&view=pthranking&layout=profile&userid="; // supernoob local testing link
 
 //                 var profilelink="/component/pthranking/?view=pthranking&layout=profile&userid="+myList[i]["userid"];
