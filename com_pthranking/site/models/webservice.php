@@ -652,6 +652,32 @@ class PthRankingModelWebservice extends JModelItem
         }
         return json_encode($ret,JSON_FORCE_OBJECT);
     }
+	
+	public function getLastGames(){
+        $db=$this->mydb();
+
+		$jinput = JFactory::getApplication()->input;
+        $userid = $jinput->get('userid',0,'INT');
+		$ret = array();
+		if($userid == 0) return json_encode($ret);
+
+        $query = $db->getQuery(true);
+        $query->select('ghp.*, g.name, g.end_time');
+        $query->from('#__game_has_player as ghp');
+		$query->join('LEFT', '#__game AS g ON g.idgame = ghp.game_idgame');
+        $query->where('ghp.player_idplayer'. " = ".$db->quote($userid));
+		$query->order("start_time DESC");
+		$query->setLimit('20');
+        $db->setQuery($query);
+        $ret=array();
+        $rows = $db->loadObjectList();
+
+        if(is_array($rows) && count($rows) > 0)
+        {
+			$ret = $rows;
+		}
+		return json_encode($ret);
+	}
 
     public function getProfile() // maybe not needed
     {
@@ -773,6 +799,7 @@ class PthRankingModelWebservice extends JModelItem
         $query->from('#__game_has_player AS ghp');
         $query->join('LEFT', '#__player_ranking AS pr ON pr.player_id=ghp.player_idplayer');
         $query->where($db->quoteName('game_idgame')." = $gameid");
+		$query->order("place ASC");
         $db->setQuery($query); // TODO: get also names from players
 
         $rows = $db->loadObjectList();

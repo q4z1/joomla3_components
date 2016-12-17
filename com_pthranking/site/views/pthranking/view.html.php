@@ -38,10 +38,6 @@ class PthRankingViewPthRanking extends JViewLegacy
 
     private function prepareprofile()
     {
-        $username=""; // TODO
-
-        $this->testmsg = "hello sun";
-
 		$this->setModel(JModelLegacy::getInstance('Webservice', 'PthRankingModel'));
 
         $profiledatajson= $this->get('Profile', 'Webservice');
@@ -52,6 +48,7 @@ class PthRankingViewPthRanking extends JViewLegacy
         
         if($this->userexists)
         {
+			$this->userid = $basic["playerid"];
             $this->username=$basic["username"] . " (" . $basic["gender"] 
 				. " / <img src='/media/flags_iso/" . $basic["country"] . ".png' alt='".$basic["country"] . "' />)";
             $html="<table class='table table-striped table-hover table-bordered'>\n";

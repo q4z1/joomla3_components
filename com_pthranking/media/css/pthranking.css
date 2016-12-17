@@ -15,3 +15,7 @@ canvas.canvas-holder{
 canvas.half{
     width: 50%!important;
 }
+
+#tableModalHeader, #tableModalBody, #tableModalFooter{
+    background-color: #ffffff;
+}
