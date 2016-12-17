@@ -135,6 +135,13 @@ function buildHtmlTable(selector,data) {
     if (myList.length==0) {
       jQuery(selector).append("<tr><td colspan='7'>No data found</td></tr>");
     }
+    
+    if(jQuery('span.text-danger').length > 0){
+      jQuery('html, body').animate({
+          scrollTop: jQuery("span.text-danger").offset().top - 50
+      }, 2000);
+    }
+    
     build_pagination();
 }
 

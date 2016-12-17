@@ -10,7 +10,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20161217_1613'); // chart.js is already included by template
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20161217_1838'); // chart.js is already included by template
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161217_1613');
 ?>
 <input type="hidden" name="userid" id="userid" value="<?php echo $this->userid?>" />
