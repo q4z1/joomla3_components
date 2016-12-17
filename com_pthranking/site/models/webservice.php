@@ -699,7 +699,7 @@ class PthRankingModelWebservice extends JModelItem
         $query->from('#__player_ranking');
         $query->where('username in ('.implode(',',$nicksearches).')');
 //         $query->order('myran'); // TODO: this or username?
-        $query->order('username');
+//         $query->order('username');
         $db->setQuery($query);
         $rows = $db->loadObjectList();
         if(is_array($rows) && count($rows) > 0)
@@ -712,8 +712,10 @@ class PthRankingModelWebservice extends JModelItem
         foreach($rows as $row) {
             $tableentry=array(); // assoc
             $tableentry["username"]=$row->username;
+            $index=99;
             for($i=1;$i<11;$i++) {
                 if(!(array_key_exists($i,$nickinputs))) continue;
+                if($nickinputs[$i]==$row->username) $index=$i;
                 if($nickinputs[$i]==$row->username) $nickinputs[$i]="";
             } // remove found nicknames
             $final_score=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
@@ -725,19 +727,70 @@ class PthRankingModelWebservice extends JModelItem
             $tableentry["userid"]=$row->player_id;
             $tableentry["season_games"]=$row->season_games;
             $tableentry["rank"]=$row->myrank;
-            $table[]=$tableentry;
+            $table[$index]=$tableentry;
         }
+        ksort($table);
+        $table2=array_values($table);
         $notfound=array();
         for($i=1;$i<11;$i++) {
             if(!(array_key_exists($i,$nickinputs))) continue;
             if($nickinputs[$i]!="") $notfound[]=$nickinputs[$i];
         }
-        $ret["table"]=$table;
+        $ret["table"]=$table2;
         $ret["notfound"]=$notfound;
         return json_encode($ret);
-        // TODO: not found
     }
 
+    public function getGameInfo() // call by gameid
+    {
+        $ret=array(); // return value
+        $db=$this->mydb();
+        $jinput = JFactory::getApplication()->input;
+        $gameid=$jinput->get('gameid',-1,'INT'); // dunno if 0 is already used
+
+        // query for #__game
+        $query = $db->getQuery(true);
+        $query->select('*, TIMEDIFF(end_time,start_time) AS dur');
+        $query->from('#__game');
+        $query->where($db->quoteName('idgame')." = $gameid");
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+        if(!(is_array($rows) && count($rows) > 0))
+        {
+            return json_encode(array()); // error - game not found
+        }
+        $row=$rows[0];
+        $ret["gamename"]=$row->name; // why is "name" highlited in my editor?
+        $ret["start_time"]=$row->start_time; // formatting necessary?
+        $ret["end_time"]=$row->end_time; // formatting necessary?
+        $ret["duration"]=$row->dur; // formatting necessary?
+        $ret["gameid"]=$gameid;
+
+        $places=array(); // for results
+
+        $query = $db->getQuery(true);
+        $query->select('ghp.place, ghp.player_idplayer, pr.*');
+        $query->from('#__game_has_player AS ghp');
+        $query->join('LEFT', '#__player_ranking AS pr ON pr.player_id=ghp.player_idplayer');
+        $query->where($db->quoteName('game_idgame')." = $gameid");
+        $db->setQuery($query); // TODO: get also names from players
+
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0)
+        {
+            foreach($rows as $row)
+            {
+                $tableentry=array();
+                $tableentry["place"]=$row->place;
+                $tableentry["userid"]=$row->player_idplayer;
+                $tableentry["username"]=$row->username;
+                // TODO: more info - but we have already enough for link
+                $places[]=$tableentry;
+            }
+        }
+        $ret["places"]=$places;
+        return json_encode($ret);
+    }
 }
 
 // TODO AlltimePie
