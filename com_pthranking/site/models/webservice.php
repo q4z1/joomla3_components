@@ -626,7 +626,7 @@ class PthRankingModelWebservice extends JModelItem
         $this->set_user_id_pair(); // reading parameters userid and username
 
         $query = $db->getQuery(true);
-        $query->select('pr.*, rank(pr.final_score,pr.season_games,pr.player_id) AS myrank, p.gender, p.country_iso');
+        $query->select('pr.*, rank(pr.final_score,pr.season_games,pr.player_id) AS myrank, p.gender, p.country_iso, p.avatar_hash, p.avatar_mime');
         $query->from('#__player_ranking as pr');
 		$query->join('LEFT', '#__player AS p ON p.player_id = pr.player_id');
         $query->where('pr.player_id'. " = ".$this->currentid);
@@ -648,6 +648,7 @@ class PthRankingModelWebservice extends JModelItem
 			$ret["country"] = $row->country_iso;
 			$ret["gender"] = $row->gender;
             $ret["rank"]=$row->myrank;
+			$ret["avatar"] = $row->avatar_hash . "." . $row->avatar_mime;
             // TODO: more in-between calculation, bonus/malus explained
         }
         return json_encode($ret,JSON_FORCE_OBJECT);

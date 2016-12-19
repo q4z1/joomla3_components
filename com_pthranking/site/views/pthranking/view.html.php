@@ -50,17 +50,19 @@ class PthRankingViewPthRanking extends JViewLegacy
         {
 			$this->userid = $basic["playerid"];
             $this->username=$basic["username"];
+			$this->usernameExt = $this->username;
+			$this->avatar = $basic["avatar"];
 			if($basic["gender"] != "" || $basic['country'] != ""){
 				if($basic["gender"] != ""){
-					$this->username .= " (" . $basic["gender"];
+					$this->usernameExt .= " (" . $basic["gender"];
 				}else{
-					$this->username .= " (n/a";
+					$this->usernameExt .= " (n/a";
 				}
 				
 				if($basic['country'] != ""){
-					$this->username .= " | <img src='/media/flags_iso/" . $basic["country"] . ".png' alt='".$basic["country"] . "' />)";
+					$this->usernameExt .= " | <img src='/media/flags_iso/" . $basic["country"] . ".png' alt='".$basic["country"] . "' />)";
 				}else{
-					$this->username .= " | n/a)";
+					$this->usernameExt .= " | n/a)";
 				}
 			}
 

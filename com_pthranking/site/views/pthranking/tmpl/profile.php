@@ -18,7 +18,20 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
     <div class="rt-grid-12">
         <div>
             <?php if($this->userexists): ?>
-            <h1>Profile: <?php echo $this->username?></h1>
+            <div style="float: left">
+                <h1>Profile: <?php echo $this->usernameExt?></h1>
+            </div>
+            <div style="float: right;">
+                <?php if($this->avatar != "." && file_exists(RPT_AVADIR . $this->avatar)): ?>
+                <?php
+                $image = RPT_AVADIR . $this->avatar;
+                $imageData = base64_encode(file_get_contents($image));
+                $src = 'data: '.mime_content_type($image).';base64,'.$imageData;
+                echo '<img src="' . $src . '" alt="' . $this->username . '" />';
+                ?>
+                <?php endif; ?>
+            </div>
+            <div style="clear: both;"></div>
             <hr />
             <h3>Ranking information about this season (beta phase 2016-12):</h3>
             <?php echo $this->basicinfo_html; ?>
@@ -35,13 +48,13 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
             <canvas id="alltimeChart" width="150" height="100" class="canvas-holder half"></canvas>
             <div style="clear: left;"></div>
 
+            <hr />
+            <h3>Last 20 Games played:</h3>
+            <div id="lastGames"></div>
             <?php else: ?>
             <p>Player not found</p>
             
             <?php endif; ?>
-            <hr />
-            <h3>Last 20 Games played:</h3>
-            <div id="lastGames"></div>
             <!-- Modal -->
             <div id="tableModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
               <div class="modal-header" id="tableModalHeader">
@@ -70,28 +83,28 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                       label: '# of Places',
                       data: [<?php echo implode(",", $this->season_data) ?>],
                       backgroundColor: [
-                          'rgba(255, 255, 102, 0.7)',
-                          'rgba(204, 204, 255, 0.7)',
-                          'rgba(255, 153, 51, 0.7)',
-                          'rgba(51, 204, 102, 0.7)',
-                          'rgba(51, 102, 255, 0.7)',
-                          'rgba(204, 204, 204, 0.7)',
-                          'rgba(153, 153, 153, 0.7)',
-                          'rgba(102, 102, 102, 0.7)',
-                          'rgba(51, 51, 51, 0.7)',
-                          'rgba(0, 0, 0, 0.7)',
+                          'rgba(204, 255, 204, 1.0)',
+                          'rgba(153, 255, 153, 1.0)',
+                          'rgba(102, 255, 102, 1.0)',
+                          'rgba(51, 255, 51, 1.0)',
+                          'rgba(0, 255, 0, 1.0)',
+                          'rgba(0, 204, 0, 1.0)',
+                          'rgba(0, 153, 0, 1.0)',
+                          'rgba(0, 102, 0, 1.0)',
+                          'rgba(0, 51, 0, 1.0)',
+                          'rgba(0, 20, 0, 1.0)',
                       ],
                       borderColor: [
-                          'rgba(255, 255, 102,1)',
-                          'rgba(204, 204, 255, 1)',
-                          'rgba(255, 153, 51, 1)',
-                          'rgba(51, 204, 102, 1)',
-                          'rgba(51, 102, 255, 1)',
-                          'rgba(204, 204, 204, 1)',
-                          'rgba(153, 153, 153, 1)',
-                          'rgba(102, 102, 102, 1)',
-                          'rgba(51, 51, 51, 1)',
-                          'rgba(0, 0, 0, 1)',
+                          'rgba(204, 255, 204, 0.5)',
+                          'rgba(153, 255, 153, 0.5)',
+                          'rgba(102, 255, 102, 0.5)',
+                          'rgba(51, 255, 51, 0.5)',
+                          'rgba(0, 255, 0, 0.5)',
+                          'rgba(0, 204, 0, 0.5)',
+                          'rgba(0, 153, 0, 0.5)',
+                          'rgba(0, 102, 0, 0.5)',
+                          'rgba(0, 51, 0, 0.5)',
+                          'rgba(0, 20, 0, 0.5)',
                       ],
                       borderWidth: 1
                   }]
@@ -100,10 +113,17 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   scales: {
                       yAxes: [{
                           ticks: {
-                              beginAtZero:true
+                              beginAtZero:true,
+                              fontSize: 20
                           }
+                      }],
+                      xAxes: [{
+                        ticks: {
+                            fontSize: 20
+                        }
                       }]
-                  }
+                  },
+                  legend:{display: true,labels:{fontSize:20}}
               }
           });
         
@@ -115,31 +135,32 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   datasets: [{
                       data: [<?php echo implode(",", $this->season_data) ?>],
                       backgroundColor: [
-                          'rgba(255, 255, 102, 0.7)',
-                          'rgba(204, 204, 255, 0.7)',
-                          'rgba(255, 153, 51, 0.7)',
-                          'rgba(51, 204, 102, 0.7)',
-                          'rgba(51, 102, 255, 0.7)',
-                          'rgba(204, 204, 204, 0.7)',
-                          'rgba(153, 153, 153, 0.7)',
-                          'rgba(102, 102, 102, 0.7)',
-                          'rgba(51, 51, 51, 0.7)',
-                          'rgba(0, 0, 0, 0.7)',
+                          'rgba(204, 255, 204, 1.0)',
+                          'rgba(153, 255, 153, 1.0)',
+                          'rgba(102, 255, 102, 1.0)',
+                          'rgba(51, 255, 51, 1.0)',
+                          'rgba(0, 255, 0, 1.0)',
+                          'rgba(0, 204, 0, 1.0)',
+                          'rgba(0, 153, 0, 1.0)',
+                          'rgba(0, 102, 0, 1.0)',
+                          'rgba(0, 51, 0, 1.0)',
+                          'rgba(0, 20, 0, 1.0)',
                       ],
                       hoverBackgroundColor: [
-                          'rgba(255, 255, 102,1)',
-                          'rgba(204, 204, 255, 1)',
-                          'rgba(255, 153, 51, 1)',
-                          'rgba(51, 204, 102, 1)',
-                          'rgba(51, 102, 255, 1)',
-                          'rgba(204, 204, 204, 1)',
-                          'rgba(153, 153, 153, 1)',
-                          'rgba(102, 102, 102, 1)',
-                          'rgba(51, 51, 51, 1)',
-                          'rgba(0, 0, 0, 1)',
+                          'rgba(204, 255, 204, 0.5)',
+                          'rgba(153, 255, 153, 0.5)',
+                          'rgba(102, 255, 102, 0.5)',
+                          'rgba(51, 255, 51, 0.5)',
+                          'rgba(0, 255, 0, 0.5)',
+                          'rgba(0, 204, 0, 0.5)',
+                          'rgba(0, 153, 0, 0.5)',
+                          'rgba(0, 102, 0, 0.5)',
+                          'rgba(0, 51, 0, 0.5)',
+                          'rgba(0, 20, 0, 0.5)',
                       ],
                   }]
               },
+              options:{legend:{display: true,labels:{fontSize:20}}},
           });
           
          var aChart = jQuery("#alltimeChart");
@@ -151,28 +172,28 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                       label: '# of Places',
                       data: [<?php echo implode(",", $this->alltime_data) ?>],
                       backgroundColor: [
-                          'rgba(255, 255, 102, 0.7)',
-                          'rgba(204, 204, 255, 0.7)',
-                          'rgba(255, 153, 51, 0.7)',
-                          'rgba(51, 204, 102, 0.7)',
-                          'rgba(51, 102, 255, 0.7)',
-                          'rgba(204, 204, 204, 0.7)',
-                          'rgba(153, 153, 153, 0.7)',
-                          'rgba(102, 102, 102, 0.7)',
-                          'rgba(51, 51, 51, 0.7)',
-                          'rgba(0, 0, 0, 0.7)',
+                          'rgba(204, 255, 204, 1.0)',
+                          'rgba(153, 255, 153, 1.0)',
+                          'rgba(102, 255, 102, 1.0)',
+                          'rgba(51, 255, 51, 1.0)',
+                          'rgba(0, 255, 0, 1.0)',
+                          'rgba(0, 204, 0, 1.0)',
+                          'rgba(0, 153, 0, 1.0)',
+                          'rgba(0, 102, 0, 1.0)',
+                          'rgba(0, 51, 0, 1.0)',
+                          'rgba(0, 20, 0, 1.0)',
                       ],
                       borderColor: [
-                          'rgba(255, 255, 102,1)',
-                          'rgba(204, 204, 255, 1)',
-                          'rgba(255, 153, 51, 1)',
-                          'rgba(51, 204, 102, 1)',
-                          'rgba(51, 102, 255, 1)',
-                          'rgba(204, 204, 204, 1)',
-                          'rgba(153, 153, 153, 1)',
-                          'rgba(102, 102, 102, 1)',
-                          'rgba(51, 51, 51, 1)',
-                          'rgba(0, 0, 0, 1)',
+                          'rgba(204, 255, 204, 0.5)',
+                          'rgba(153, 255, 153, 0.5)',
+                          'rgba(102, 255, 102, 0.5)',
+                          'rgba(51, 255, 51, 0.5)',
+                          'rgba(0, 255, 0, 0.5)',
+                          'rgba(0, 204, 0, 0.5)',
+                          'rgba(0, 153, 0, 0.5)',
+                          'rgba(0, 102, 0, 0.5)',
+                          'rgba(0, 51, 0, 0.5)',
+                          'rgba(0, 20, 0, 0.5)',
                       ],
                       borderWidth: 1
                   }]
@@ -181,10 +202,17 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   scales: {
                       yAxes: [{
                           ticks: {
-                              beginAtZero:true
+                              beginAtZero:true,
+                              fontSize: 20
                           }
+                      }],
+                      xAxes: [{
+                        ticks: {
+                            fontSize: 20
+                        }
                       }]
-                  }
+                  },
+                  legend:{display: true,labels:{fontSize:20}}
               }
           });
         
@@ -196,37 +224,40 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   datasets: [{
                       data: [<?php echo implode(",", $this->alltime_data) ?>],
                       backgroundColor: [
-                          'rgba(255, 255, 102, 0.7)',
-                          'rgba(204, 204, 255, 0.7)',
-                          'rgba(255, 153, 51, 0.7)',
-                          'rgba(51, 204, 102, 0.7)',
-                          'rgba(51, 102, 255, 0.7)',
-                          'rgba(204, 204, 204, 0.7)',
-                          'rgba(153, 153, 153, 0.7)',
-                          'rgba(102, 102, 102, 0.7)',
-                          'rgba(51, 51, 51, 0.7)',
-                          'rgba(0, 0, 0, 0.7)',
+                          'rgba(204, 255, 204, 1.0)',
+                          'rgba(153, 255, 153, 1.0)',
+                          'rgba(102, 255, 102, 1.0)',
+                          'rgba(51, 255, 51, 1.0)',
+                          'rgba(0, 255, 0, 1.0)',
+                          'rgba(0, 204, 0, 1.0)',
+                          'rgba(0, 153, 0, 1.0)',
+                          'rgba(0, 102, 0, 1.0)',
+                          'rgba(0, 51, 0, 1.0)',
+                          'rgba(0, 20, 0, 1.0)',
                       ],
                       hoverBackgroundColor: [
-                          'rgba(255, 255, 102, 1)',
-                          'rgba(204, 204, 255, 1)',
-                          'rgba(255, 153, 51, 1)',
-                          'rgba(51, 204, 102, 1)',
-                          'rgba(51, 102, 255, 1)',
-                          'rgba(204, 204, 204, 1)',
-                          'rgba(153, 153, 153, 1)',
-                          'rgba(102, 102, 102, 1)',
-                          'rgba(51, 51, 51, 1)',
-                          'rgba(0, 0, 0, 1)',
+                          'rgba(204, 255, 204, 0.5)',
+                          'rgba(153, 255, 153, 0.5)',
+                          'rgba(102, 255, 102, 0.5)',
+                          'rgba(51, 255, 51, 0.5)',
+                          'rgba(0, 255, 0, 0.5)',
+                          'rgba(0, 204, 0, 0.5)',
+                          'rgba(0, 153, 0, 0.5)',
+                          'rgba(0, 102, 0, 0.5)',
+                          'rgba(0, 51, 0, 0.5)',
+                          'rgba(0, 20, 0, 0.5)',
                       ],
                   }]
               },
+              options:{legend:{display: true,labels:{fontSize:20}}},
           });
           
           // fetch last games
-          jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=lastGames&userid="+jQuery("#userid").val()).done(function(data){
-           fillLastGames(data);
-          });
+          if(jQuery("#lastGames").length > 0){
+            jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=lastGames&userid="+jQuery("#userid").val()).done(function(data){
+             fillLastGames(data);
+            });
+          }
       } 
     };
 </script>

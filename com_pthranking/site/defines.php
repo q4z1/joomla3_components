@@ -7,3 +7,6 @@ define('RDB_USER', 'pthrdbuser'); // User for database authentication
 define('RDB_PASS', 'BKmTEOUOeRjgiwyP'); // Password for database authentication
 define('RDB_DB', 'pokerth_ranking'); // Database name
 define('RDB_PREF', ''); // Database table prefix
+
+// @XXX: path to avatar images
+define("RPT_AVADIR", "/path/to/avatars");
