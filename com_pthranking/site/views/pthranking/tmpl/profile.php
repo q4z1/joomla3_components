@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20161217_1838'); // chart.js is already included by template
-$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161217_1613');
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161220_1858');
 ?>
 <input type="hidden" name="userid" id="userid" value="<?php echo $this->userid?>" />
 <div class="rt-flex-container">
@@ -21,13 +21,13 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
             <div style="float: left">
                 <h1>Profile: <?php echo $this->usernameExt?></h1>
             </div>
-            <div style="float: right;">
+            <div style="float: left; margin-left: 20px">
                 <?php if($this->avatar != "." && file_exists(RPT_AVADIR . $this->avatar)): ?>
                 <?php
                 $image = RPT_AVADIR . $this->avatar;
                 $imageData = base64_encode(file_get_contents($image));
                 $src = 'data: '.mime_content_type($image).';base64,'.$imageData;
-                echo '<img src="' . $src . '" alt="' . $this->username . '" />';
+                echo '<img width="200" src="' . $src . '" alt="' . $this->username . '" />';
                 ?>
                 <?php endif; ?>
             </div>
@@ -83,28 +83,28 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                       label: '# of Places',
                       data: [<?php echo implode(",", $this->season_data) ?>],
                       backgroundColor: [
-                          'rgba(204, 255, 204, 1.0)',
-                          'rgba(153, 255, 153, 1.0)',
-                          'rgba(102, 255, 102, 1.0)',
-                          'rgba(51, 255, 51, 1.0)',
-                          'rgba(0, 255, 0, 1.0)',
-                          'rgba(0, 204, 0, 1.0)',
-                          'rgba(0, 153, 0, 1.0)',
-                          'rgba(0, 102, 0, 1.0)',
-                          'rgba(0, 51, 0, 1.0)',
-                          'rgba(0, 20, 0, 1.0)',
+                          'rgba(86, 226, 137, 1.0)',
+                          'rgba(104, 226, 86, 1.0)',
+                          'rgba(174, 226, 86, 1.0)',
+                          'rgba(226, 297, 86, 1.0)',
+                          'rgba(226, 137, 86, 1.0)',
+                          'rgba(226, 84, 104, 1.0)',
+                          'rgba(226, 86, 174, 1.0)',
+                          'rgba(207, 86, 226, 1.0)',
+                          'rgba(138, 86, 226, 1.0)',
+                          'rgba(86, 104, 226, 1.0)',
                       ],
                       borderColor: [
-                          'rgba(204, 255, 204, 0.5)',
-                          'rgba(153, 255, 153, 0.5)',
-                          'rgba(102, 255, 102, 0.5)',
-                          'rgba(51, 255, 51, 0.5)',
-                          'rgba(0, 255, 0, 0.5)',
-                          'rgba(0, 204, 0, 0.5)',
-                          'rgba(0, 153, 0, 0.5)',
-                          'rgba(0, 102, 0, 0.5)',
-                          'rgba(0, 51, 0, 0.5)',
-                          'rgba(0, 20, 0, 0.5)',
+                          'rgba(86, 226, 137, 0.5)',
+                          'rgba(104, 226, 86, 0.5)',
+                          'rgba(174, 226, 86, 0.5)',
+                          'rgba(226, 297, 86, 0.5)',
+                          'rgba(226, 137, 86, 0.5)',
+                          'rgba(226, 84, 104, 0.5)',
+                          'rgba(226, 86, 174, 0.5)',
+                          'rgba(207, 86, 226, 0.5)',
+                          'rgba(138, 86, 226, 0.5)',
+                          'rgba(86, 104, 226, 0.5)',
                       ],
                       borderWidth: 1
                   }]
@@ -135,28 +135,28 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   datasets: [{
                       data: [<?php echo implode(",", $this->season_data) ?>],
                       backgroundColor: [
-                          'rgba(204, 255, 204, 1.0)',
-                          'rgba(153, 255, 153, 1.0)',
-                          'rgba(102, 255, 102, 1.0)',
-                          'rgba(51, 255, 51, 1.0)',
-                          'rgba(0, 255, 0, 1.0)',
-                          'rgba(0, 204, 0, 1.0)',
-                          'rgba(0, 153, 0, 1.0)',
-                          'rgba(0, 102, 0, 1.0)',
-                          'rgba(0, 51, 0, 1.0)',
-                          'rgba(0, 20, 0, 1.0)',
+                          'rgba(86, 226, 137, 1.0)',
+                          'rgba(104, 226, 86, 1.0)',
+                          'rgba(174, 226, 86, 1.0)',
+                          'rgba(226, 297, 86, 1.0)',
+                          'rgba(226, 137, 86, 1.0)',
+                          'rgba(226, 84, 104, 1.0)',
+                          'rgba(226, 86, 174, 1.0)',
+                          'rgba(207, 86, 226, 1.0)',
+                          'rgba(138, 86, 226, 1.0)',
+                          'rgba(86, 104, 226, 1.0)',
                       ],
                       hoverBackgroundColor: [
-                          'rgba(204, 255, 204, 0.5)',
-                          'rgba(153, 255, 153, 0.5)',
-                          'rgba(102, 255, 102, 0.5)',
-                          'rgba(51, 255, 51, 0.5)',
-                          'rgba(0, 255, 0, 0.5)',
-                          'rgba(0, 204, 0, 0.5)',
-                          'rgba(0, 153, 0, 0.5)',
-                          'rgba(0, 102, 0, 0.5)',
-                          'rgba(0, 51, 0, 0.5)',
-                          'rgba(0, 20, 0, 0.5)',
+                          'rgba(86, 226, 137, 0.5)',
+                          'rgba(104, 226, 86, 0.5)',
+                          'rgba(174, 226, 86, 0.5)',
+                          'rgba(226, 297, 86, 0.5)',
+                          'rgba(226, 137, 86, 0.5)',
+                          'rgba(226, 84, 104, 0.5)',
+                          'rgba(226, 86, 174, 0.5)',
+                          'rgba(207, 86, 226, 0.5)',
+                          'rgba(138, 86, 226, 0.5)',
+                          'rgba(86, 104, 226, 0.5)',
                       ],
                   }]
               },
@@ -172,28 +172,28 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                       label: '# of Places',
                       data: [<?php echo implode(",", $this->alltime_data) ?>],
                       backgroundColor: [
-                          'rgba(204, 255, 204, 1.0)',
-                          'rgba(153, 255, 153, 1.0)',
-                          'rgba(102, 255, 102, 1.0)',
-                          'rgba(51, 255, 51, 1.0)',
-                          'rgba(0, 255, 0, 1.0)',
-                          'rgba(0, 204, 0, 1.0)',
-                          'rgba(0, 153, 0, 1.0)',
-                          'rgba(0, 102, 0, 1.0)',
-                          'rgba(0, 51, 0, 1.0)',
-                          'rgba(0, 20, 0, 1.0)',
+                          'rgba(86, 226, 137, 1.0)',
+                          'rgba(104, 226, 86, 1.0)',
+                          'rgba(174, 226, 86, 1.0)',
+                          'rgba(226, 297, 86, 1.0)',
+                          'rgba(226, 137, 86, 1.0)',
+                          'rgba(226, 84, 104, 1.0)',
+                          'rgba(226, 86, 174, 1.0)',
+                          'rgba(207, 86, 226, 1.0)',
+                          'rgba(138, 86, 226, 1.0)',
+                          'rgba(86, 104, 226, 1.0)',
                       ],
                       borderColor: [
-                          'rgba(204, 255, 204, 0.5)',
-                          'rgba(153, 255, 153, 0.5)',
-                          'rgba(102, 255, 102, 0.5)',
-                          'rgba(51, 255, 51, 0.5)',
-                          'rgba(0, 255, 0, 0.5)',
-                          'rgba(0, 204, 0, 0.5)',
-                          'rgba(0, 153, 0, 0.5)',
-                          'rgba(0, 102, 0, 0.5)',
-                          'rgba(0, 51, 0, 0.5)',
-                          'rgba(0, 20, 0, 0.5)',
+                          'rgba(86, 226, 137, 0.5)',
+                          'rgba(104, 226, 86, 0.5)',
+                          'rgba(174, 226, 86, 0.5)',
+                          'rgba(226, 297, 86, 0.5)',
+                          'rgba(226, 137, 86, 0.5)',
+                          'rgba(226, 84, 104, 0.5)',
+                          'rgba(226, 86, 174, 0.5)',
+                          'rgba(207, 86, 226, 0.5)',
+                          'rgba(138, 86, 226, 0.5)',
+                          'rgba(86, 104, 226, 0.5)',
                       ],
                       borderWidth: 1
                   }]
@@ -224,28 +224,28 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   datasets: [{
                       data: [<?php echo implode(",", $this->alltime_data) ?>],
                       backgroundColor: [
-                          'rgba(204, 255, 204, 1.0)',
-                          'rgba(153, 255, 153, 1.0)',
-                          'rgba(102, 255, 102, 1.0)',
-                          'rgba(51, 255, 51, 1.0)',
-                          'rgba(0, 255, 0, 1.0)',
-                          'rgba(0, 204, 0, 1.0)',
-                          'rgba(0, 153, 0, 1.0)',
-                          'rgba(0, 102, 0, 1.0)',
-                          'rgba(0, 51, 0, 1.0)',
-                          'rgba(0, 20, 0, 1.0)',
+                          'rgba(86, 226, 137, 1.0)',
+                          'rgba(104, 226, 86, 1.0)',
+                          'rgba(174, 226, 86, 1.0)',
+                          'rgba(226, 297, 86, 1.0)',
+                          'rgba(226, 137, 86, 1.0)',
+                          'rgba(226, 84, 104, 1.0)',
+                          'rgba(226, 86, 174, 1.0)',
+                          'rgba(207, 86, 226, 1.0)',
+                          'rgba(138, 86, 226, 1.0)',
+                          'rgba(86, 104, 226, 1.0)',
                       ],
                       hoverBackgroundColor: [
-                          'rgba(204, 255, 204, 0.5)',
-                          'rgba(153, 255, 153, 0.5)',
-                          'rgba(102, 255, 102, 0.5)',
-                          'rgba(51, 255, 51, 0.5)',
-                          'rgba(0, 255, 0, 0.5)',
-                          'rgba(0, 204, 0, 0.5)',
-                          'rgba(0, 153, 0, 0.5)',
-                          'rgba(0, 102, 0, 0.5)',
-                          'rgba(0, 51, 0, 0.5)',
-                          'rgba(0, 20, 0, 0.5)',
+                          'rgba(86, 226, 137, 0.5)',
+                          'rgba(104, 226, 86, 0.5)',
+                          'rgba(174, 226, 86, 0.5)',
+                          'rgba(226, 297, 86, 0.5)',
+                          'rgba(226, 137, 86, 0.5)',
+                          'rgba(226, 84, 104, 0.5)',
+                          'rgba(226, 86, 174, 0.5)',
+                          'rgba(207, 86, 226, 0.5)',
+                          'rgba(138, 86, 226, 0.5)',
+                          'rgba(86, 104, 226, 0.5)',
                       ],
                   }]
               },

@@ -106,7 +106,7 @@ function loadpage(pagenumber,pagesize) {
 }
 
 // Builds the HTML Table out of myList.
-titlerow="<tr><th>Rank</th><th>Name</th><th>Average Points</th><th>Games (Season)</th><th>Score</th><th>Gender</th><th>Country</th></tr>"
+titlerow="<tr><th>Rank</th><th>Name</th><th>Average Points</th><th>Games (Season)</th><th>Score</th><th></th><th></th></tr>"
 function buildHtmlTable(selector,data) {
     var columns=["rank","username","average_points","season_games","final_score", "gender", "country"];
     jQuery(selector).empty();
@@ -122,16 +122,14 @@ function buildHtmlTable(selector,data) {
             if(columns[colIndex]=="username") {
                 var profilelink="/component/pthranking/?view=pthranking&layout=profile&userid="+myList[i]["userid"];
                 row$.append(jQuery('<td/>').html("<a href=\""+profilelink+"\">"+cellValue+"</a>")); 
-            }else if(columns[colIndex]=="country" && cellValue != ""){
-              var img = "<img src='/media/flags_iso/"+cellValue+".png' alt='" + cellValue + "' />";
-              row$.append(jQuery('<td/>').html(img));
-            }
-            else {
+            }else {
                 row$.append(jQuery('<td/>').html(cellValue));
             }
         }
         jQuery(selector).append(row$);
     }
+    var JTooltips = new Tips($$('.hasTip'), 
+       { maxTitleChars: 50, fixed: false});
     if (myList.length==0) {
       jQuery(selector).append("<tr><td colspan='7'>No data found</td></tr>");
     }

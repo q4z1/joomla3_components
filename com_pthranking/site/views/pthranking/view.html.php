@@ -9,7 +9,9 @@
  
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
- 
+
+JHTML::_('behavior.tooltip');
+
 /**
  * HTML View class for the HelloWorld Component
  *
@@ -39,7 +41,7 @@ class PthRankingViewPthRanking extends JViewLegacy
     private function prepareprofile()
     {
 		$this->setModel(JModelLegacy::getInstance('Webservice', 'PthRankingModel'));
-
+		$model = $this->getModel("Webservice");
         $profiledatajson= $this->get('Profile', 'Webservice');
         $profiledata=json_decode($profiledatajson,true);
         $basic = $profiledata["basic"];
@@ -54,13 +56,13 @@ class PthRankingViewPthRanking extends JViewLegacy
 			$this->avatar = $basic["avatar"];
 			if($basic["gender"] != "" || $basic['country'] != ""){
 				if($basic["gender"] != ""){
-					$this->usernameExt .= " (" . $basic["gender"];
+					$this->usernameExt .= " (" . $model->getGenderIcon($basic["gender"]);
 				}else{
 					$this->usernameExt .= " (n/a";
 				}
 				
 				if($basic['country'] != ""){
-					$this->usernameExt .= " | <img src='/media/flags_iso/" . $basic["country"] . ".png' alt='".$basic["country"] . "' />)";
+					$this->usernameExt .= " | ".$model->getFlagTooltip($basic["country"]).")";
 				}else{
 					$this->usernameExt .= " | n/a)";
 				}

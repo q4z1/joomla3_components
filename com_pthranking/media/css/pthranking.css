@@ -19,3 +19,7 @@ canvas.half{
 #tableModalHeader, #tableModalBody, #tableModalFooter{
     background-color: #ffffff;
 }
+
+.tip-title {
+   color: #4a4a4a!important;
+}

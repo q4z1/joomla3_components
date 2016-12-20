@@ -10,8 +10,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161217_1838');
-$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161209_0220');
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161220_1936');
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161220_1858');
 $uri = JUri::getInstance();
 $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 // $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', false);
