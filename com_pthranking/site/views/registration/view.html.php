@@ -315,18 +315,9 @@ class PthRankingViewRegistration extends JViewLegacy
 		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger('onInit','dynamic_recaptcha');
 			
-		// @TODO: clause for $this->submit no longer needed as the post will be done by webservice and the redirect to email val by jQuery
 		$jinput = JFactory::getApplication()->input;
 		$this->submit = $jinput->get('submit', false, 'BOOL');
 		
-		if($this->submit){
-
-			
-		}else{
-			// nothing to do - just show the template with the registration form
-		}
-		
-        
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -335,6 +326,10 @@ class PthRankingViewRegistration extends JViewLegacy
  
 			return false;
 		}
+
+		$app    = JFactory::getApplication();
+		$pathway = $app->getPathway();
+		$pathway->addItem('Registration', JURI::base() . '/component/pthranking/?view=registration');
 		
         parent::display($tpl);
 	}

@@ -29,10 +29,26 @@ class PthRankingViewPthRanking extends JViewLegacy
 	function display($tpl = null)
 	{
 		// Assign data to the view
-		$this->msg = 'PokerTH ranking - default view';
         $layout = $this->getLayout();
-        if($layout=="profile") $this->prepareprofile();
-        if($layout=="gametable") $this->preparegametable();
+		$app    = JFactory::getApplication();
+		$pathway = $app->getPathway();
+        $jinput = JFactory::getApplication()->input;
+        $inputid= $jinput->get('userid',0,'INT');
+        $inputname= $jinput->get('username',"",'STRING');
+		$pathway->addItem('Ranking - Leaderboard', JURI::base() . '/component/pthranking/?view=pthranking&layout=leaderboard');
+        if($layout=="profile"){
+			if($inputid > 0){
+				$param = "&userid=" . $inputid;
+			}elseif($inputname != ""){
+				$param = "&username=" . $inputname;
+			}
+			$pathway->addItem('Ranking - Profile Page', JURI::base() . '/component/pthranking/?view=pthranking&layout=profile'.$param);
+			$this->prepareprofile();
+		}
+        if($layout=="gametable"){
+			$pathway->addItem('Ranking - Gametable', '#');
+			$this->preparegametable();
+		}
  
 		// Display the view
 		parent::display($tpl);
@@ -54,6 +70,15 @@ class PthRankingViewPthRanking extends JViewLegacy
             $this->username=$basic["username"];
 			$this->usernameExt = $this->username;
 			$this->avatar = $basic["avatar"];
+			// http://pokerth.net/media/kunena/avatars/resized/size144/crypsis/nophoto.png
+			$ava = '<img width="144" src="'.JURI::base().'/media/kunena/avatars/resized/size144/crypsis/nophoto.png" alt="no avatar" />';
+            if($this->avatar != "." && file_exists(RPT_AVADIR . $this->avatar)){
+                $image = RPT_AVADIR . $this->avatar;
+                $imageData = base64_encode(file_get_contents($image));
+                $src = 'data: '.mime_content_type($image).';base64,'.$imageData;
+                $ava = '<img width="200" src="' . $src . '" alt="' . $this->username . '" />';
+            }
+			
 			if($basic["gender"] != "" || $basic['country'] != ""){
 				if($basic["gender"] != ""){
 					$this->usernameExt .= " (" . $model->getGenderIcon($basic["gender"]);
@@ -69,14 +94,14 @@ class PthRankingViewPthRanking extends JViewLegacy
 			}
 
             $html="<table class='table table-striped table-hover table-bordered'>\n";
-
-            $html .= "<tr><td>Name:</td><td>";
-            $html .= $basic["username"]."</td></tr>\n";
+			
+            $html .= "<tr><td>Name:</td><td>" . $basic["username"]."</td>"
+					. "<td rowspan='5' style='width: 210px; text-align:center; vertical-align: middle;'>" . $ava . "</td></tr>";
             
-            $html .= "<tr><th>Rank:</th><td>";
+            $html .= "<tr><td>Rank:<td>";
             $html .= $basic["rank"]."</td></tr>\n";
 			
-            $html .= "<tr><th>Final Score:</th><td>";
+            $html .= "<tr><td>Final Score:</td><td>";
             $html .= $basic["final_score"]."</td></tr>\n";
 			
             $html .= "<tr><td>Player id:</td><td>";
@@ -86,19 +111,19 @@ class PthRankingViewPthRanking extends JViewLegacy
             $html .= $basic["season_games"]."</td></tr>\n";
 			
 			if(array_key_exists("last5", $profiledata) && is_array($profiledata["last5"]) && count($profiledata["last5"]) > 0){
-				$html .= "<tr><td>Last 5 game places:</td><td>";
+				$html .= "<tr><td>Last 5 game places:</td><td colspan='2'>";
 				$html .= implode(", ", $profiledata["last5"]);
 				$html .= "</td></tr>\n";
 			}
 
             
-            $html .= "<tr><td>Total points:</td><td>";
+            $html .= "<tr><td>Total points:</td><td colspan='2'>";
             $html .= $basic["points_sum"]."</td></tr>\n";
             
-            $html .= "<tr><td>Average Points:</td><td>";
+            $html .= "<tr><td>Average Points:</td><td colspan='2'>";
             $html .= $basic["average_points"]."</td></tr>\n";
             
-            $html .= "<tr><td>Games last 7 days:</td><td>";
+            $html .= "<tr><td>Games last 7 days:</td><td colspan='2'>";
             $html .= $basic["games_seven_days"]."</td></tr>\n";
             
             $html .="</table>\n";

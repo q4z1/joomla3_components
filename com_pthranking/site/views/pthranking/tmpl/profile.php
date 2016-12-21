@@ -18,21 +18,7 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
     <div class="rt-grid-12">
         <div>
             <?php if($this->userexists): ?>
-            <div style="float: left">
-                <h1>Profile: <?php echo $this->usernameExt?></h1>
-            </div>
-            <div style="float: left; margin-left: 20px">
-                <?php if($this->avatar != "." && file_exists(RPT_AVADIR . $this->avatar)): ?>
-                <?php
-                $image = RPT_AVADIR . $this->avatar;
-                $imageData = base64_encode(file_get_contents($image));
-                $src = 'data: '.mime_content_type($image).';base64,'.$imageData;
-                echo '<img width="200" src="' . $src . '" alt="' . $this->username . '" />';
-                ?>
-                <?php endif; ?>
-            </div>
-            <div style="clear: both;"></div>
-            <hr />
+            <h1>Profile: <?php echo $this->usernameExt?></h1>
             <h3>Ranking information about this season (beta phase 2016-12):</h3>
             <?php echo $this->basicinfo_html; ?>
             <hr />

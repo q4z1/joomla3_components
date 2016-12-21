@@ -48,6 +48,10 @@ class PthRankingViewEmailval extends JViewLegacy
 		}else{
 			// nothing to do - just show the validation site with an input field for the activation key
 		}
+		
+		$app    = JFactory::getApplication();
+		$pathway = $app->getPathway();
+		$pathway->addItem('Email Address Validation', JURI::base() . '/component/pthranking/?view=emailval');
  
 		// Display the view
 		parent::display($tpl);

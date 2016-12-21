@@ -310,6 +310,10 @@ class PthRankingViewActivategame extends JViewLegacy
 			return false;
 		}
 		
+		$app    = JFactory::getApplication();
+		$pathway = $app->getPathway();
+		$pathway->addItem('Game Account Activation', JURI::base() . '/component/pthranking/?view=activategame');
+		
         parent::display($tpl);
 	}
 }
