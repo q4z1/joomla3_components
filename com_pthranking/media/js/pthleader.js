@@ -21,22 +21,22 @@ document.onreadystatechange = function() {
       }                          
     );
     
-    jQuery('#but_prev').click(
-      function(event){
-        var ret = false;
-        event.preventDefault();
-        event.stopPropagation();
-        loadprev();
-        return ret;
-      }                          
-    );
-    
     jQuery('#but_next').click(
       function(event){
         var ret = false;
         event.preventDefault();
         event.stopPropagation();
         loadnext();
+        return ret;
+      }                          
+    );
+    
+    jQuery('#but_prev').click(
+      function(event){
+        var ret = false;
+        event.preventDefault();
+        event.stopPropagation();
+        loadprev();
         return ret;
       }                          
     );
@@ -57,6 +57,24 @@ document.onreadystatechange = function() {
     // @XXX: due to weird loading of jquery in joomla - load this jquery plugin when dom is loaded
     jQuery.getScript("/media/com_pthranking/js/jquery.simplePagination.js?ts=20161207_0355", function(){
       loadpage(page,size);
+    });
+    
+    jQuery.getScript("/media/com_pthranking/js/jquery.easy-autocomplete.min.js?ts=20161221_0355", function(){
+      // autocomplete user search
+      var autocOptions = {
+        url: function(uname) {
+          return "/component/pthranking/?view=webservice&format=raw&pthtype=autocompleteuser&username=" + uname;
+        },
+        getValue: "value",
+        theme: "square",
+        list: {
+          maxNumberOfElements: 10,
+          match: {
+            enabled: true
+          }
+        }
+      };
+      jQuery("#username").easyAutocomplete(autocOptions);
     });
   } 
 };

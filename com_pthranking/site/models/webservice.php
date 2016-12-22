@@ -543,6 +543,30 @@ class PthRankingModelWebservice extends JModelItem
 		return json_encode(array("status" => "ok", "response" => $return));
 	}
 	
+	public function getAutocompleteUser(){
+		$return = false;
+		$jinput = JFactory::getApplication()->input;
+		$username = $jinput->get('username', "", 'STRING');
+		$a_json = array();
+		if($username == ""){
+			return json_encode($a_json);
+		}
+		$db = $this->mydb();
+		$username = '%' . $db->escape( $username, true ) . '%';
+        $query = $db->getQuery(true);
+        $query->select('username');
+        $query->from('#__player');
+        $query->where($db->quoteName('username') . " LIKE ".$db->quote($username, false) );
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0){
+			foreach($rows as $row){
+				$a_json[] = array("value" => $row->username);
+			}
+		}
+		return json_encode($a_json);
+	}
+	
 	public function getDoForumAccountTransfer(){
 		$return = false;
 		$response = "unspecified";
