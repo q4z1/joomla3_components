@@ -290,6 +290,7 @@ class PthRankingViewRegistration extends JViewLegacy
 		"Peter I Island" => "AQ",
 		"Queen Maud Land" => "AQ",
 		"British Antarctic Territory" => "AQ",
+		"Catalonia" => "catalonia",
 	);
 	
 	/**
