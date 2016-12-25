@@ -462,7 +462,7 @@ class PthRankingModelEmailval extends JModelItem
 					"NULL",
 					$db->quote($_SERVER['REMOTE_ADDR']),
 					$db->quote(($player_entry->gender != "") ? $this->gender[$player_entry->gender] : 0),
-					$db->quote(array_search($player_entry->country_iso, $this->country_iso)),
+					$db->quote(($player_entry->country_iso != "") ? array_search($player_entry->country_iso, $this->country_iso) : ''),
 				);
 				
 				// Prepare the insert query.
