@@ -52,7 +52,7 @@ $url = $base . JRoute::_('index.php?option=com_pthranking&view=activategame', fa
                 <label for="pthcountry">Country:</label>
                 <select id="pthranking-country" name="pthcountry" class="inputbox">
                     <option value="">---</option>
-                    <?php foreach($this->country_iso as $country => $iso):?>
+                    <?php foreach(PthRankingDefines::$country_iso as $country => $iso):?>
                     <option value="<?php echo $iso ?>"><?php echo $country ?></option>
                     <?php endforeach; ?>
                 </select>
