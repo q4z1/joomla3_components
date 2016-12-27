@@ -10,7 +10,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161222_0403');
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthleader.js?tx=20161227_1039');
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161220_1858');
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/easy-autocomplete.min.css');
 $uri = JUri::getInstance();

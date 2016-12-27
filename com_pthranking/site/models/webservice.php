@@ -285,7 +285,7 @@ class PthRankingModelWebservice extends JModelItem
         $query = $db->getQuery(true);
         $query->select('username');
         $query->from('#__player');
-        $query->where($db->quoteName('username') . " LIKE ".$db->quote($username, false) );
+        $query->where($db->quoteName('username') . " LIKE ".$db->quote(strtolower($username), false) );
         $db->setQuery($query);
         $rows = $db->loadObjectList();
         if(is_array($rows) && count($rows) > 0){

@@ -41,18 +41,6 @@ document.onreadystatechange = function() {
       }                          
     );
     
-    jQuery('#username').keypress(function (e) {
-      // check enter-key
-      if (e.which == 13) {
-        var username = jQuery('#username').val();
-        if(username == "") return false;
-        jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=rankingtable&username="+username+"&searchplayer=1").done(
-          function(data){
-            display_search_result(data);
-          }                  
-        );
-      }
-    });
     
     // @XXX: due to weird loading of jquery in joomla - load this jquery plugin when dom is loaded
     jQuery.getScript("/media/com_pthranking/js/jquery.simplePagination.js?ts=20161207_0355", function(){
@@ -71,10 +59,31 @@ document.onreadystatechange = function() {
           maxNumberOfElements: 10,
           match: {
             enabled: true
-          }
+          },
+          onChooseEvent: function(){
+            var username = jQuery('#username').val();
+            if(username == "") return ret;
+            jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=rankingtable&username="+username+"&searchplayer=1").done(
+              function(data){
+                display_search_result(data);
+              }                  
+            );
+          },
         }
       };
       jQuery("#username").easyAutocomplete(autocOptions);
+      jQuery('#username').keypress(function (e) {
+        // check enter-key
+        if (e.which == 13) {
+          var username = jQuery('#username').val();
+          if(username == "") return false;
+          jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=rankingtable&username="+username+"&searchplayer=1").done(
+            function(data){
+              display_search_result(data);
+            }                  
+          );
+        }
+      });
     });
   } 
 };
