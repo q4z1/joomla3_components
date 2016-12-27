@@ -209,9 +209,9 @@ class PthRankingViewPthRanking extends JViewLegacy
             $this->notfound=$html_notfound;
         }
 
-        $table_html="<table class='table table-striped table-hover table-bordered'>\n";
-        $table_html.="<tr><th>Name</th><td>avg. Points</td><td>games (season)</td>";
-        $table_html.="<th>Score</th><th>Rank</th></tr>\n";
+        $table_html="<table class='table table-striped table-hover table-bordered tablesorter' id='gameTable'>\n";
+        $table_html.="<thead><tr><th>Name</th><th>avg. Points</th><th>games (season)</th>";
+        $table_html.="<th>Score</th><th>Rank</th></tr></thead><tbody>\n";
 		$uri = JUri::getInstance();
 		$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
         $base_url=$base."/component/pthranking/?view=pthranking&layout=profile&userid="; // TODO - change/check if correct
@@ -228,7 +228,7 @@ class PthRankingViewPthRanking extends JViewLegacy
             $table_html.="<td>".$entry["final_score"]."</td>";
             $table_html.="<td>".$entry["rank"]."</td></tr>\n";
         }
-        $table_html.="</table>\n";
+        $table_html.="</tbody></table>\n";
         $this->rankinginfo=$table_html;
         return ;
     }
