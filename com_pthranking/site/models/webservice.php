@@ -54,6 +54,11 @@ class PthRankingModelWebservice extends JModelItem
         return($db); // TODO: maybe remember the result
      }
 	 
+	 public function getDailyChampions(){
+		$return = false;
+		$db = $this->mydb();
+	 }
+	 
 	 public function getStoreUserdata(){
 		$return = false;
 		$response = "unspecified";
@@ -512,7 +517,7 @@ class PthRankingModelWebservice extends JModelItem
         {
           $query = $db->getQuery(true);
           $query->select('player_id');
-          $query->from('#__player_ranking');
+          $query->from('#__player');
           $query->where($db->quoteName('username')." = ".$db->quote($inputname));
           $db->setQuery($query);
           $rows = $db->loadObjectList();
