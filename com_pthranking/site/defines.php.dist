@@ -11,6 +11,9 @@ define('RDB_PREF', ''); // Database table prefix
 // @XXX: path to avatar images
 define("RPT_AVADIR", "/path/to/avatars");
 
+//@XXX: path to chatcleaner config
+define("RPT_CCCFG", "/path/to/cleanerconfig.xml");
+
 class PthRankingDefines {
     public static $country_iso = array(
 		"Afghanistan" => "AF",

@@ -215,7 +215,28 @@ class PthRankingModelWebservice extends JModelItem
 				$return = true;
 			}
 		}
-		
+		// @XXX: include chatcleaner config in order to filter not allowed words
+		if(!$return && file_exists(RPT_CCCFG)){
+			$reason = "";
+			preg_match_all("|BadWords value=\"(.*)\"|U",
+				file_get_contents(RPT_CCCFG),
+				$matches, PREG_PATTERN_ORDER);
+			if(is_array($matches) && count($matches) > 1){
+				foreach($matches[1] as $match){
+					// check if username contains a bad word
+					$bad_word = strtolower(trim(preg_replace('/\s+/', '', $match)));
+					if(strlen($bad_word) < 4) continue;
+					if(strpos(strtolower(preg_replace('/\s+/', '', $username)), $bad_word)  !== false){
+						// bad word exists
+						$reason = "bad word: " . $bad_word;
+						$return = true;
+						break;
+					}
+				}
+			}
+			return json_encode(array("status" => "ok", "response" => $return, "reason" => $reason));
+		}
+	
 		return json_encode(array("status" => "ok", "response" => $return));
 	}
 
