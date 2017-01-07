@@ -12,7 +12,9 @@ time.sleep(2) # breathe and be patient
 # coefficients!
 forget_coef=0.04
 points_coef=(15,9,6,4,3,2,1,0,0,0)
-weakly_forget_penalty=0.6
+inactivity_penalty=0.06
+inactivity_days=7 # one week
+inactivity_start=int(time.mktime((2016,10,1,1,1,1,1,1,1))) # some date
 # end coefficients
 
 
@@ -47,9 +49,20 @@ for x in playerlist:
   player_db[x]=player_start_values(x) # maybe .copy() ?
 
 
+penalty_time=inactivity_start
+
 print "starting simulation of",len(game_db),"games..."
 for game in game_db:
   # big loop over all the games
+
+  # start malus part
+  while penalty_time<game["t"]:
+    old_time=penalty_time
+    penalty_time+=inactivity_days*86400
+    for player in player_db:
+      if player_db[player]["last_game"]<old_time:
+        player_db[player]["score"]*=(1.0-inactivity_penalty)
+  # end malus part 
 
   for player,place in game["d"]:
     # small loop over all places
