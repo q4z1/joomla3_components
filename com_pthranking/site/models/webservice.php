@@ -238,7 +238,8 @@ class PthRankingModelWebservice extends JModelItem
 			if(!$return &&
 			   (
 			   strpos(strtolower(preg_replace('/\s+/', '', $username)), "sp0ck")  !== false ||
-			   strpos(strtolower(preg_replace('/\s+/', '', $username)), "spock")  !== false
+			   strpos(strtolower(preg_replace('/\s+/', '', $username)), "spock")  !== false ||
+			   strpos(strtolower(preg_replace('/\s+/', '', $username)), "janedeau")  !== false
 			   )
 			){
 				// bad word exists
