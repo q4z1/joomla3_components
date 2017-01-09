@@ -7,7 +7,7 @@ class PthRankingViewSignature extends JViewLegacy
 {
     function display($tpl = null)
     {
-		$this->msg = $this->get("signature");
+		$this->sig = $this->get("signature");
  
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

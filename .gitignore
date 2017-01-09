@@ -1,3 +1,4 @@
 *.zip
 *.komodo*
 com_pthranking/site/defines.php
+cli_tests/

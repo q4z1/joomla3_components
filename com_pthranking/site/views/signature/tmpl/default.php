@@ -12,5 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 //die($this->msg);
 $doc = JFactory::getDocument();
 $doc->setMimeEncoding('image/png');
-readfile($this->msg);
+//readfile($this->sig);
+imagepng($this->sig);
+imagedestroy($this->sig);
 ?>

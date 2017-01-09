@@ -79,6 +79,7 @@ function validate_inputs(){
         var obj = JSON.parse(data);
         if(obj.status != "ok"){
           // an error happened - how to handle it?
+          jQuery('#errors').html("<ul class='text-danger'><li>Email address already used!</li></ul>");
         }
         else{
           if(obj.response == true){

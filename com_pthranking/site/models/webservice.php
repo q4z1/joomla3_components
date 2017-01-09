@@ -234,6 +234,19 @@ class PthRankingModelWebservice extends JModelItem
 					}
 				}
 			}
+			// exception for wkD
+			if(!$return &&
+			   (
+			   strpos(strtolower(preg_replace('/\s+/', '', $username)), "sp0ck")  !== false ||
+			   strpos(strtolower(preg_replace('/\s+/', '', $username)), "spock")  !== false
+			   )
+			){
+				// bad word exists
+				$reason = "bad word!";
+				$return = true;
+			}
+			
+			
 			return json_encode(array("status" => "ok", "response" => $return, "reason" => $reason));
 		}
 	
@@ -248,7 +261,14 @@ class PthRankingModelWebservice extends JModelItem
         $email = $jinput->get('pthemail', "", 'STRING');
 		
 		if($email == "") return json_encode(array("status" => "nok", "reason" => "email empty"));
-        
+		
+        // exception for wkD
+		preg_match('/^.*(@w[0-9]+).*$/i',
+			$email, $match);
+		if(is_array($match) && count($match) > 1){
+			return json_encode(array("status" => "nok", "response" => true, "reason" => "email already used"));
+		}
+		
         $db = $this->mydb();
         
         $query = $db->getQuery(true);
