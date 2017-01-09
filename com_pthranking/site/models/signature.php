@@ -52,20 +52,23 @@ class PthRankingModelSignature extends JModelItem
 			
 			if($player["avatar_mime"] != ""){
 				$ava = null;
-				switch($player["avatar_mime"]){
-					
-					case("png"):
-						$ava = imagecreatefrompng(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
-						break;
-					case("jpg"):
-						$ava = imagecreatefromjpeg(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
-						break;
-					case("gif"):
-						$ava = imagecreatefromgif(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
-						break;
-					default:
-						break;
+				if(file_exists(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"])){
+					switch($player["avatar_mime"]){
+						
+						case("png"):
+							$ava = imagecreatefrompng(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
+							break;
+						case("jpg"):
+							$ava = imagecreatefromjpeg(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
+							break;
+						case("gif"):
+							$ava = imagecreatefromgif(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
+							break;
+						default:
+							break;
+					}
 				}
+
 				if(!is_null($ava)){
 					$h = 69;
 					list($awidth, $aheight) = getimagesize(RPT_AVADIR . $player["avatar_hash"] . "." . $player["avatar_mime"]);
@@ -78,10 +81,10 @@ class PthRankingModelSignature extends JModelItem
 			ImageTTFText ($sig, 15, 0, $nickX, 23, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
 			    $player['username']);
 			// 1st line average & score
-			ImageTTFText ($sig, 12, 0, 100, 43, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
-			    "Average: ".$player['average_points']." / Score: ".$player['final_score']);
+			ImageTTFText ($sig, 12, 0, 75, 48, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
+			    "Rank: ".$player['rank']." / Average: ".$player['average_points']." / Score: ".$player['final_score']);
 			// 2nd line games & won
-			ImageTTFText ($sig, 12, 0, 100, 63, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
+			ImageTTFText ($sig, 12, 0, 75, 68, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
 			    "Games: ".$player['season_games']." / Won: ".$player['wins']);
 			// footer url
 			ImageTTFText ($sig, 12, 0, (500-132-8), 93, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
