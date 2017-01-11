@@ -71,6 +71,7 @@ game_time_pairs=[]
 
 for entry in quad_db:
   gameid=entry[0]
+  if gameid==0: continue # possible bug in pokerth
   playerid=entry[1]
   place=entry[2]
   unixtime=entry[3]
