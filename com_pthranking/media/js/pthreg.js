@@ -23,7 +23,7 @@ document.onreadystatechange = function() {
                   // username already used - either in player table or in joomla forum user table!
                   // put a hint beside username - username already used!
                   console.log("username already used!");
-                  jQuery('#errors').html("<ul class='text-danger'><li>Username is already used or not allowed!</li></ul>")
+                  jQuery('#errors').html("<ul class='text-danger'><li>Username is already used or not allowed!</li></ul>");
                   jQuery('html, body').animate({
                       scrollTop: jQuery("#errors").offset().top - 50
                   }, 500);

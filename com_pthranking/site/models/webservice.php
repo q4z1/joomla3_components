@@ -905,6 +905,10 @@ class PthRankingModelWebservice extends JModelItem
         $ret["places"]=$places;
         return json_encode($ret);
     }
+	
+	public function getDelAcc(){
+		return "ok";
+	}
 }
 
 // TODO AlltimePie

@@ -15,9 +15,9 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @since  0.0.1
  */
-class PthRankingViewActivategame extends JViewLegacy
+class PthRankingViewAccdelete extends JViewLegacy
 {
-	
+
 	protected $game_acc_exists = false;
 	
 	/**
@@ -41,7 +41,7 @@ class PthRankingViewActivategame extends JViewLegacy
 		
 		$app    = JFactory::getApplication();
 		$pathway = $app->getPathway();
-		$pathway->addItem('Game Account Activation', JURI::base() . '/component/pthranking/?view=activategame');
+		$pathway->addItem('Account Deletion', JURI::base() . '/component/pthranking/?view=accdelete');
 		
         parent::display($tpl);
 	}

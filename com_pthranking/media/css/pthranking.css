@@ -1,7 +1,7 @@
-#errors .text-danger, #ranking_table span.text-danger{ color: #8b0000;}
+#errors .text-danger, #ranking_table span.text-danger, p.text-danger{ color: #8b0000;}
 #ranking_table span.text-danger:hover{ color: inherit!important; }
 
-#errors .text-success, #ranking_table span.text-success{ color: green!important;}
+#errors .text-success, #ranking_table span.text-success, span.text-success{ color: green!important;}
 #ranking_table span.text-success:hover{ color: inherit!important;}
 #pthsignup-form sup.mandatory, #pthactivate-form sup.mandatory{ color: #8b0000; font-size: smaller;}
 #pthemailval-form input[type=text]{
@@ -16,7 +16,7 @@ canvas.half{
     width: 50%!important;
 }
 
-#tableModalHeader, #tableModalBody, #tableModalFooter{
+#tableModalHeader, #tableModalBody, #tableModalFooter, #deleteModalHeader, #deleteModalBody, #deleteModalFooter{
     background-color: #ffffff;
 }
 
