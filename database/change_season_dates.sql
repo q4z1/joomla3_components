@@ -5,11 +5,15 @@ DELIMITER //
 CREATE FUNCTION start_of_this_season ( now datetime)
  RETURNS datetime DETERMINISTIC
 BEGIN
- DECLARE month varchar(10);
+ DECLARE month,year varchar(10);
  SET month = DATE_FORMAT(now,"%m");
  IF month<4 THEN
---   RETURN( DATE_FORMAT(now,"%Y-01-01 00:00:00"));
-   RETURN (DATE_FORMAT(DATE_SUB(now,INTERVAL 99 DAY),"%Y-10-01 00:00:00"));
+  SET year = DATE_FORMAT(now,"%Y");
+  IF year = 2017 AND month>1 THEN
+    RETURN( DATE_FORMAT(now,"%Y-02-01 00:00:00"));
+  END IF;
+  RETURN( DATE_FORMAT(now,"%Y-01-01 00:00:00"));
+--    RETURN (DATE_FORMAT(DATE_SUB(now,INTERVAL 99 DAY),"%Y-10-01 00:00:00"));
  END IF;
  IF month>3 AND month<7 THEN
 --    SET season_start = DATE_FORMAT(now,"%Y-04-01");
