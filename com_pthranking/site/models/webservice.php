@@ -90,7 +90,7 @@ class PthRankingModelWebservice extends JModelItem
 		$gender = $jinput->post->get('gender', "", 'WORD');
 		$country = $jinput->post->get('country', "", 'WORD');
 		$act_key = md5(microtime()); // microtime() instead of time() - just to be safe
-
+		$fp = $jinput->post->get('fp', "", 'STRING');
 		// @TODO: make some checks?
 
 		// @XXX: store data into db
@@ -100,7 +100,7 @@ class PthRankingModelWebservice extends JModelItem
 		$query = $db->getQuery(true);
 		
 		// Insert columns.
-		$columns = array('username', 'password', 'email', 'created', 'country_iso', 'gender', 'act_key');
+		$columns = array('username', 'password', 'email', 'created', 'country_iso', 'gender', 'act_key', 'fp');
 		 
 		// Insert values.
 		$values = array(
@@ -111,6 +111,7 @@ class PthRankingModelWebservice extends JModelItem
 			$db->quote($country),
 			$db->quote($gender),
 			$db->quote($act_key), // maybe a shorter activation key for email validation?
+			$db->quote($fp),
 		);
 		
 		$query
@@ -907,6 +908,70 @@ class PthRankingModelWebservice extends JModelItem
     }
 	
 	public function getDelAcc(){
+		$return = false;
+		$user = JFactory::getUser();
+		$jinput = JFactory::getApplication()->input;
+        $email = $jinput->get('email',"",'STRING');
+		if($user->guest || $user->email != $email){
+			return "nok";
+		}
+		
+        $db = $this->mydb();
+
+        // query for #__game
+        $query = $db->getQuery(true);
+        $query->select('player_id, username');
+        $query->from('#__player');
+        $query->where($db->quoteName('email')." = '".$user->email."'");
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0)
+        {
+			$player = $rows[0];
+			// create an entry in suspended usernames
+			$query = $db->getQuery(true);
+			$columns = array('username', 'suspended_date');
+			$values = array(
+				$db->quote($player->username),
+				$db->quote(date("Y-m-d H:i:s")),
+			);
+			$query
+				->insert($db->quoteName('#__suspended_usernames'))
+				->columns($db->quoteName($columns))
+				->values(implode(',', $values));
+			$db->setQuery($query);
+			$res = $db->execute();
+			die(var_export($res,true));
+			// rename username and email
+            $query = $db->getQuery(true);
+            $fields = array(
+                $db->quoteName('username') . " = 'deleted_".$player->player_id."'",
+				$db->quoteName('email') . " = 'deleted_".$player->player_id."'",
+            );
+            // Conditions for which records should be updated.
+            $conditions = array(
+                $db->quoteName('player_id') . ' = ' . $player->player_id
+            );
+            $query->update($db->quoteName('#__player'))->set($fields)->where($conditions);
+            $db->setQuery($query);
+            $result = $db->execute();
+            $query = $db->getQuery(true);
+            $fields = array(
+                $db->quoteName('username') . " = 'deleted_".$player->player_id."'",
+            );
+            $conditions = array(
+                $db->quoteName('player_id') . ' = ' . $player->player_id
+            );
+            $query->update($db->quoteName('#__player_ranking'))->set($fields)->where($conditions);
+            $db->setQuery($query);
+            $result = $db->execute();
+        }else{
+			// no game account - delete forum account only
+		}
+		// delete forum account
+		
+		
+		
 		return "ok";
 	}
 }

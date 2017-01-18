@@ -2,6 +2,33 @@ var usernameValid = false;
 
 document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
+    
+      jQuery.getScript("/media/com_pthranking/js/jquery.md5.js", function(){
+        jQuery("#pthsignup-form").append('<input type="hidden" name="fp" id="fp" value="'+fp()+'"/>');
+      });
+      
+      function fp()
+      {
+          var sFP = "";
+          sFP+="Resolution:"+window.screen.availWidth+"x"+window.screen.availHeight+"\n";
+          sFP+="ColorDepth:"+screen.colorDepth+"\n";
+          sFP+="UserAgent:"+navigator.userAgent+"\n";    
+          sFP+="Timezone:"+(new Date()).getTimezoneOffset()+"\n";
+          sFP+="Language:"+(navigator.language || navigator.userLanguage)+"\n";
+          document.cookie="sFP";
+          if (typeof navigator.cookieEnabled != "undefined" 
+              && navigator.cookieEnabled == true
+              && document.cookie.indexOf("sFP") != -1)
+          sFP+="Cookies:true\n";
+          else
+          sFP+="Cookies:false\n";
+          sFP+="Plugins:"+jQuery.map(navigator.plugins, function(oElement) 
+          { 
+            return "\n"+oElement.name+"-"+oElement.version; 
+          });
+          return jQuery.md5(sFP);
+      }
+            
       jQuery("#pthreg").click(function(event){
           jQuery('#errors').empty();
           usernameValid = false;
@@ -10,8 +37,21 @@ document.onreadystatechange = function() {
           event.stopPropagation();
           console.log("#pthreg clicked.");
           // check Username
+          username = jQuery("#pthranking-username").val();
+          
+          found = false;
+          pattern = new RegExp(/[<>\"'%&;\(\)]/);
+          found = pattern.test(username);
+          if(found){
+            jQuery('#errors').html("<ul class='text-danger'><li>Username contains invalid characters! &lt;&gt;\"'%;()&amp; characters are not allowed.</li></ul>");
+            jQuery('html, body').animate({
+                scrollTop: jQuery("#errors").offset().top - 50
+            }, 500);
+            return ret;
+          }
+          
           jQuery.get(
-            "/index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+jQuery("#pthranking-username").val()).done(
+            "/index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+username).done(
             function(data){
               console.log("checkusername response="+data);
               var obj = JSON.parse(data);
@@ -105,6 +145,7 @@ function validate_inputs(){
               country: country,
               recaptcha_challenge_field: recaptcha_challenge_field,
               recaptcha_response_field: recaptcha_response_field,
+              fp: jQuery('#fp').val(),
               submit: true,
             };
             jQuery.post(
