@@ -190,6 +190,7 @@ class PthRankingModelWebservice extends JModelItem
         $username = $jinput->get('pthusername', "", 'STRING');
 		
 		if($username == "") return json_encode(array("status" => "nok", "reason" => "username empty"));
+		if(strpos($username, "deleted_") !== false){ return json_encode(array("status" => "nok", "reason" => "username not allowed")); }
         $db = $this->mydb();
         $query = $db->getQuery(true);
         $query->select('player_id,username');
@@ -916,6 +917,8 @@ class PthRankingModelWebservice extends JModelItem
 			return "nok";
 		}
 		
+		//die(var_export($user, true));
+		
         $db = $this->mydb();
 
         // query for #__game
@@ -941,7 +944,6 @@ class PthRankingModelWebservice extends JModelItem
 				->values(implode(',', $values));
 			$db->setQuery($query);
 			$res = $db->execute();
-			die(var_export($res,true));
 			// rename username and email
             $query = $db->getQuery(true);
             $fields = array(
@@ -954,7 +956,12 @@ class PthRankingModelWebservice extends JModelItem
             );
             $query->update($db->quoteName('#__player'))->set($fields)->where($conditions);
             $db->setQuery($query);
-            $result = $db->execute();
+			try{
+				$result = $db->execute();
+			}
+			catch(Exception $e){
+				die($e->getMessage());
+			}
             $query = $db->getQuery(true);
             $fields = array(
                 $db->quoteName('username') . " = 'deleted_".$player->player_id."'",
@@ -964,13 +971,54 @@ class PthRankingModelWebservice extends JModelItem
             );
             $query->update($db->quoteName('#__player_ranking'))->set($fields)->where($conditions);
             $db->setQuery($query);
-            $result = $db->execute();
+			try{
+				$result = $db->execute();
+			}
+			catch(Exception $e){
+				die($e->getMessage());
+			}
         }else{
 			// no game account - delete forum account only
 		}
-		// delete forum account
-		
-		
+		// delete joomla account
+		//die(var_export($user->id,true));
+		$db = JFactory::getDBO(); // db object for joomla database
+		$query = $db->getQuery(true);
+		$conditions = array(
+			$db->quoteName('id') . ' = ' . $db->quote($user->id),
+		);
+		$query->delete($db->quoteName('#__users'));
+		$query->where($conditions);
+		$db->setQuery($query);
+		try{
+			$result = $db->execute();
+		}
+		catch(Exception $e){
+			die($e->getMessage());
+		}
+		// delete kunena forum user
+		$query = $db->getQuery(true);
+		$conditions = array(
+			$db->quoteName('userid') . ' = ' . $db->quote($user->id),
+		);
+		$query->delete($db->quoteName('#__kunena_users'));
+		$query->where($conditions);
+		$db->setQuery($query);
+		$result = $db->execute();
+		// delete other entries = entry in `#__user_usergroup_map`
+		$query = $db->getQuery(true);
+		$conditions = array(
+			$db->quoteName('user_id') . ' = ' . $db->quote($user->id),
+		);
+		$query->delete($db->quoteName('#__user_usergroup_map'));
+		$query->where($conditions);
+		$db->setQuery($query);
+		try{
+			$result = $db->execute();
+		}
+		catch(Exception $e){
+			die($e->getMessage());
+		}
 		
 		return "ok";
 	}
