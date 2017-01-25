@@ -12,7 +12,7 @@
 	<license>License Info</license>
 	<!--  The version string is recorded in the components table -->
 	<!--<version>0.0.30</version>-->
-	<version>0.0.17</version>
+	<version>0.0.88</version>
 	<!-- The description is optional and defaults to the name -->
 	<description>PokerTH ranking component</description>
  
@@ -29,6 +29,7 @@
 	<files folder="site">
 		<filename>index.html</filename>
 		<filename>defines.php</filename>
+		<filename>cron.php</filename>
 		<filename>pthranking.php</filename>
 		<filename>controller.php</filename>
 		<folder>views</folder>
