@@ -626,8 +626,7 @@ class PthRankingModelWebservice extends JModelItem
         if($seasononly)
         {
             $query->where($db->quoteName('player_idplayer')." = ".$this->currentid,'AND');
-			// @FIXME: @sup: this does not work after our changes last night!
-            //$query->where($db->quoteName('start_time')." >= start_of_this_season('$now')");
+            $query->where($db->quoteName('start_time')." >= start_of_this_season('$now')");
         }
         else
         {
