@@ -190,19 +190,21 @@ class PthRankingModelWebservice extends JModelItem
         $username = $jinput->get('pthusername', "", 'STRING');
 		
 		if($username == "") return json_encode(array("status" => "nok", "reason" => "username empty"));
-		if(strpos($username, "deleted_") !== false){ return json_encode(array("status" => "nok", "reason" => "username not allowed")); }
-        $db = $this->mydb();
-        $query = $db->getQuery(true);
-        $query->select('player_id,username');
-        $query->from('#__player');
-        $query->where($db->quoteName('username') . " = ".$db->quote($username) );
-        $db->setQuery($query);
-        
-        $rows = $db->loadObjectList();
-        if(is_array($rows) && count($rows) > 0){
-			$return = true;
-		}
+		if(strpos($username, "deleted_") !== false){ $return = true; }
 		
+		if(!$return){
+			$db = $this->mydb();
+			$query = $db->getQuery(true);
+			$query->select('player_id,username');
+			$query->from('#__player');
+			$query->where($db->quoteName('username') . " = ".$db->quote($username) );
+			$db->setQuery($query);
+			
+			$rows = $db->loadObjectList();
+			if(is_array($rows) && count($rows) > 0){
+				$return = true;
+			}
+		}
 		// next check if nick with forum account exists
 		if(!$return){
 			$db2    = JFactory::getDBO();
@@ -468,6 +470,7 @@ class PthRankingModelWebservice extends JModelItem
         $query = $db->getQuery(true);
         $query->select('COUNT(player_id) as num');
         $query->from('#__player_ranking');
+		$query->where("username NOT LIKE 'deleted_%'");
         $db->setQuery($query);
         $rows = $db->loadObjectList();
         if(is_array($rows) && count($rows) > 0){
@@ -483,7 +486,7 @@ class PthRankingModelWebservice extends JModelItem
         $query->select('pr.*, p.country_iso, p.gender');
         $query->from('#__player_ranking AS pr');
 		$query->join('LEFT', '#__player AS p ON p.player_id = pr.player_id');
-        $query->where('1');
+        $query->where("pr.username NOT LIKE 'deleted_%'");
         $query->order('final_score DESC, season_games DESC, player_id ASC');
         $query->setLimit($size,$start2);
         $db->setQuery($query);
