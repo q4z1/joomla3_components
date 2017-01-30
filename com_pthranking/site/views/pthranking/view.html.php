@@ -127,7 +127,12 @@ class PthRankingViewPthRanking extends JViewLegacy
             $html .= $basic["games_seven_days"]."</td></tr>\n";
             
             $html .="</table>\n";
+			
 
+
+			$this->all_seasons = $profiledata["all"];
+			//$html .= "<hr /><pre>".var_export($this->all_seasons, true). "</pre><hr />";
+			
             $this->basicinfo_html=$html;
 
             $seasonpie=$profiledata["seasonpie"]["data"]; // 

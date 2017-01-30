@@ -12,6 +12,21 @@ defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20161217_1838'); // chart.js is already included by template
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161220_1858');
+
+//$current = $this->all_seasons[count($this->all_seasons)-2];
+//$alltime = $this->all_seasons[count($this->all_seasons)-1];
+
+$seasons = array();
+$i = 0;
+$current = count($this->all_seasons) - 2;
+$alltime = count($this->all_seasons) - 1;
+foreach($this->all_seasons as $season => $data){
+ if($i != $current && $i != $alltime) $seasons[$season] = array("quart" => $season, "data" => $data);
+ elseif($i == $current) $seasons["current"] = array("quart" => $season, "data" => $data);
+ elseif($i == $alltime) $seasons["alltime"] = array("quart" => $season, "data" => $data);
+ $i++;
+}
+echo("<pre>".var_export($seasons, true)."</pre>");
 ?>
 <input type="hidden" name="userid" id="userid" value="<?php echo $this->userid?>" />
 <div class="rt-flex-container">
@@ -19,17 +34,45 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
         <div>
             <?php if($this->userexists): ?>
             <h1>Profile: <?php echo $this->usernameExt?></h1>
-            <h3>Ranking information about this season (beta phase 2016-12):</h3>
+            <h3>Ranking information about current season (beta phase <?php echo $seasons["current"]["quart"] ?>):</h3>
             <?php echo $this->basicinfo_html; ?>
             <hr />
-            <h3>Statistics for this season (beta phase 2016-12):</h3>
+            <h3>Statistics for current season (beta phase <?php echo $seasons["current"]["quart"] ?>):</h3>
             <?php echo $this->seasonpiedata; ?>
-            <canvas id="seasonPie" width="100" height="100" class="canvas-holder half"></canvas>
-            <canvas id="seasonChart" width="150" height="100" class="canvas-holder half"></canvas>
+            <canvas id="pie<?php echo $seasons["current"]["quart"] ?>" width="100" height="100" class="canvas-holder half"></canvas>
+            <canvas id="chart<?php echo $seasons["current"]["quart"] ?>" width="150" height="100" class="canvas-holder half"></canvas>
             <div style="clear: left;"></div>
             <hr />
             <h3>Statistics for all time:</h3>
-            <?php echo $this->alltimepiedata; ?>
+            <?php /*echo $this->alltimepiedata;*/ ?>
+            <?php
+                $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
+                $row="<tr><td>Place:</td>";
+                $key="place";
+                foreach($seasons["alltime"]["data"]["place"] as $key => $entry) $row.="<td>".$key."</td>";
+                $row .= "<td>sum</td>";
+                $row.="</tr>\n";
+                $ret.=$row;
+        
+                $row="<tr><th>Games:</th>";
+                $key="count";
+                foreach($seasons["alltime"]["data"]["place"] as $key => $entry) $row.="<td>".$entry."</td>";
+                $row .= "<td>".$seasons["alltime"]["data"]["sum"]."</td>";
+                $row.="</tr>\n";
+                $ret.=$row;
+        
+                $row="<tr><td>Percent:</td>";
+                $key="percent";
+                foreach($seasons["alltime"]["data"]["place"] as $key => $entry){
+                    $percent = $entry*100/$seasons["alltime"]["data"]["sum"];
+                    $row.="<td>".sprintf("%.1f %%",$percent)."</td>";
+                }
+                $row .= "<td>100.00 %</td>";
+                $row.="</tr>\n";
+                $ret.=$row;
+                $ret.="</table>";
+                echo $ret;
+            ?>
             <canvas id="alltimePie" width="100" height="100" class="canvas-holder half"></canvas>
             <canvas id="alltimeChart" width="150" height="100" class="canvas-holder half"></canvas>
             <div style="clear: left;"></div>
@@ -60,14 +103,14 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
 <script>
   document.onreadystatechange = function() {
       if (document.readyState === 'complete') {
-         var sChart = jQuery("#seasonChart");
+         var sChart = jQuery("#chart"+'<?php echo $seasons["current"]["quart"] ?>');
           var msChart = new Chart(sChart, {
               type: 'bar',
               data: {
                   labels: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"],
                   datasets: [{
                       label: '# of Places',
-                      data: [<?php echo implode(",", $this->season_data) ?>],
+                      data: [<?php echo str_replace("d=", "", $seasons["current"]["data"]["url"][0]) ?>],
                       backgroundColor: [
                           'rgba(86, 226, 137, 1.0)',
                           'rgba(104, 226, 86, 1.0)',
@@ -113,13 +156,13 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
               }
           });
         
-          var sPie = jQuery("#seasonPie");
-          var msPie = new Chart(sPie, {
+          var aPie = jQuery("#pie"+'<?php echo $seasons["current"]["quart"] ?>');
+          var asPie = new Chart(aPie, {
               type: 'pie',
               data: {
                   labels: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"],
                   datasets: [{
-                      data: [<?php echo implode(",", $this->season_data) ?>],
+                      data: [<?php echo str_replace("d=", "", $seasons["current"]["data"]["url"][0]) ?>],
                       backgroundColor: [
                           'rgba(86, 226, 137, 1.0)',
                           'rgba(104, 226, 86, 1.0)',
@@ -156,7 +199,7 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
                   labels: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"],
                   datasets: [{
                       label: '# of Places',
-                      data: [<?php echo implode(",", $this->alltime_data) ?>],
+                      data: [<?php echo implode(",", $seasons["alltime"]["data"]["place"]) ?>],
                       backgroundColor: [
                           'rgba(86, 226, 137, 1.0)',
                           'rgba(104, 226, 86, 1.0)',
@@ -208,7 +251,7 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
               data: {
                   labels: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"],
                   datasets: [{
-                      data: [<?php echo implode(",", $this->alltime_data) ?>],
+                      data: [<?php echo implode(",", $seasons["alltime"]["data"]["place"]) ?>],
                       backgroundColor: [
                           'rgba(86, 226, 137, 1.0)',
                           'rgba(104, 226, 86, 1.0)',

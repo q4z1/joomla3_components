@@ -14,6 +14,8 @@ define("RPT_AVADIR", "/path/to/avatars");
 //@XXX: path to chatcleaner config
 define("RPT_CCCFG", "/path/to/cleanerconfig.xml");
 
+define("FIRST_SEAS", "2016-04");
+
 class PthRankingDefines {
     public static $country_iso = array(
 		"Afghanistan" => "AF",

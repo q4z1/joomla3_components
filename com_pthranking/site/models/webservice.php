@@ -779,6 +779,7 @@ class PthRankingModelWebservice extends JModelItem
         $ret["seasonpie"]=json_decode($this->getSeasonPie());
         $ret["alltimepie"]=json_decode($this->getAlltimePie());
 		$ret["last5"]=json_decode($this->getLastFiveGames());
+		$ret["all"] = json_decode($this->getAllSeasonsData());
         return json_encode($ret);
     }
 
@@ -1025,6 +1026,100 @@ class PthRankingModelWebservice extends JModelItem
 		
 		return "ok";
 	}
+	
+    public function getAllSeasonsData()
+    {
+		
+		$this->set_user_id_pair();
+		// @XXX: iterate through each season - finally calculate alltime from every season
+		$first = explode("-", FIRST_SEAS);
+		$current = array(date("Y") , ceil(date("m")/3));
+		$seasons = array();
+		// check 1st season end = 2017-01-31
+		//if(date("Y") >= 2017  && date("m") > 2){
+			$seasons[] = FIRST_SEAS . "_";
+			for($year=$first[0];$year<=$current[0];$year++){
+				for($quart=1;$quart<=4;$quart++){
+					if($year == $first[0] && $quart <= $first[1]) continue;
+					if($year < $current[0] || ($year == $current[0] && $quart < $current[1])){
+						$seasons[] = "$year-$quart_";
+						continue;
+					}
+				}
+			}
+		//}
+		$seasons[] = "";
+		$seasonData = array();
+		$allTime = array("place" => array(), "sum" => 0);
+		for($i=1;$i<11;$i++){
+			$allTime["place"][$i] = 0;
+		}
+		foreach($seasons as $season){
+			$tbl_pref = $season;
+			$db=$this->mydb();
+			$query = $db->getQuery(true);
+			$query->select('place , COUNT(*) AS counter');
+			$query->from('`'.RDB_PREF.$tbl_pref.'game_has_player`');
+			$query->where($db->quoteName('player_idplayer')." = ".$this->currentid,'AND');
+			$query->group('place');
+			try{
+				$db->setQuery($query); // TODO: appropriate INDEX for this query
+				$rows = $db->loadObjectList();
+			}catch(Exception $e){
+				die($e->getMessage());
+			}
+	
+			$place_count=array(0,0,0,0,0,0,0,0,0,0,0);
+			if(is_array($rows) && count($rows)>=1)
+			{
+			  foreach($rows as $row)   
+			  {
+				$place_count[$row->place]=$row->counter;
+			  }
+			}
+			$place_count[0]=0; // sum goes here
+			for($i=1;$i<11;$i++)
+			{
+			  $place_count[0]+=$place_count[$i];
+			}
+			$season_percent=array(0,0,0,0,0,0,0,0,0,0,0);
+			$retdata=array();
+			for($i=1;$i<11;$i++)
+			{
+			  $retrow=array();
+			  $retrow["place"]="$i";
+			  $retrow["count"]=$place_count[$i];
+			  if($place_count[0]>=1) $percent=$place_count[$i]*100.0/$place_count[0];
+			  else $percent=0.0;
+			  $retrow["percent"]=sprintf("%.1f %%",$percent);
+			  $allTime["place"][$i] += $place_count[$i];
+			  $allTime["sum"] += $place_count[$i];
+			  $retdata[]=$retrow;
+			}
+			$url_data=implode(",",array_slice($place_count,1,10));
+			$return_url=array("d=".$url_data,"t=1&d=".$url_data);
+			// TODO: modify according to graphics view
+			$retrow=array();
+			$retrow["place"]="sum";
+			$retrow["count"]=$place_count[0]; // TODO: maybe everything as string
+			$retrow["percent"]="100.0 %";
+			if($place_count[0]==0) $retrow["percent"]="0.0 %";
+			$retdata[]=$retrow;
+			$ret=array();
+			$ret["data"]=$retdata;
+			$ret["url"]=$return_url;
+			if($season == ""){
+				$season = date("Y") ."-". ceil(date("m")/3);
+			}else{
+				$season = str_replace("_", "", $season);
+			}
+			// @TODO: fill alltime array! doing it in above foreach or ieterate again?
+			$seasonData[$season] = $ret;
+		}
+		$seasonData["total"] = $allTime;
+        return json_encode($seasonData);
+        // TODO: maybe return object/array is too complicated?
+    }
 }
 
 // TODO AlltimePie
