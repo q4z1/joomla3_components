@@ -626,7 +626,7 @@ class PthRankingModelWebservice extends JModelItem
         if($seasononly)
         {
             $query->where($db->quoteName('player_idplayer')." = ".$this->currentid,'AND');
-            $query->where($db->quoteName('start_time')." >= start_of_this_season('$now')");
+            $query->where($db->quoteName('end_time')." >= start_of_this_season('$now')");
         }
         else
         {
@@ -1035,7 +1035,7 @@ class PthRankingModelWebservice extends JModelItem
 		$first = explode("-", FIRST_SEAS);
 		$current = array(date("Y") , ceil(date("m")/3));
 		$seasons = array();
-		// check 1st season end = 2017-01-31
+		// @FIXME: remove in productive mode - check 1st season end = 2017-01-31
 		//if(date("Y") >= 2017  && date("m") > 2){
 			$seasons[] = FIRST_SEAS . "_";
 			for($year=$first[0];$year<=$current[0];$year++){

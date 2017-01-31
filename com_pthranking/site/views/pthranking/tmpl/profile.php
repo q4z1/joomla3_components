@@ -26,7 +26,7 @@ foreach($this->all_seasons as $season => $data){
  elseif($i == $alltime) $seasons["alltime"] = array("quart" => $season, "data" => $data);
  $i++;
 }
-echo("<pre>".var_export($seasons, true)."</pre>");
+//echo("<pre>".var_export($seasons, true)."</pre>");
 ?>
 <input type="hidden" name="userid" id="userid" value="<?php echo $this->userid?>" />
 <div class="rt-flex-container">
@@ -80,26 +80,44 @@ echo("<pre>".var_export($seasons, true)."</pre>");
             <hr />
             <h3>Last 20 Games played:</h3>
             <div id="lastGames"></div>
-            <?php else: ?>
-            <p>Player not found</p>
-            
-            <?php endif; ?>
-            <!-- Modal -->
-            <div id="tableModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-              <div class="modal-header" id="tableModalHeader">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="tableModalLabel"></h3>
-              </div>
-              <div class="modal-body" id="tableModalBody">
+            <hr />
+            <h2>Historical Seasons:</h2>
+            <?php foreach($seasons as $season => $data): ?>
+            <?php if($season == "current" || $season == "alltime") continue; ?>
+            <h4>Statistics for <?php echo $season; ?>:</h3>
+            <?php
+                $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
+                $row="<tr><td>Place:</td>";
+                $key="place";
+                foreach($data["data"]["data"] as $key => $entry) $row.="<td>".$entry["place"]."</td>";
+                //$row .= "<td>sum</td>";
+                $row.="</tr>\n";
+                $ret.=$row;
+        
+                $row="<tr><th>Games:</th>";
+                $key="count";
+                foreach($data["data"]["data"] as $key => $entry) $row.="<td>".$entry["count"]."</td>";
+                //$row .= "<td>".$data["data"]["data"][10]["count"]."</td>";
+                $row.="</tr>\n";
+                $ret.=$row;
+        
+                $row="<tr><td>Percent:</td>";
+                $key="percent";
+                foreach($data["data"]["data"] as $key => $entry){
+                    $percent = $entry["count"]*100/$data["data"]["data"][10]["count"];
+                    $row.="<td>".sprintf("%.1f %%",$percent)."</td>";
+                }
+                //$row .= "<td>100.00 %</td>";
+                $row.="</tr>\n";
+                $ret.=$row;
+                $ret.="</table>";
+                echo $ret;
+            ?>
 
-              </div>
-              <div class="modal-footer" id="tableModalFooter">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-              </div>
-            </div>
-        </div>
-    </div>
-</div>
+            <canvas id="pie<?php echo $season ?>" width="100" height="100" class="canvas-holder half"></canvas>
+            <canvas id="chart<?php echo $season ?>" width="150" height="100" class="canvas-holder half"></canvas>
+            <div style="clear: left;"></div>
+            <?php endforeach; ?>
 <script>
   document.onreadystatechange = function() {
       if (document.readyState === 'complete') {
@@ -280,6 +298,101 @@ echo("<pre>".var_export($seasons, true)."</pre>");
               },
               options:{legend:{display: true,labels:{fontSize:20}}},
           });
+          <?php $i = 0; ?>
+          <?php foreach($seasons as $key => $season): ?>
+          <?php $i++; ?>
+          <?php echo "console.log('season=".$key."');"; ?>
+          <?php if($key != "current" && $key != "alltime"): ?>
+          var sChart<?php echo $i ?> = jQuery("#chart"+'<?php echo $season["quart"] ?>');
+          var msChart<?php echo $i ?> = new Chart(sChart<?php echo $i ?>, {
+              type: 'bar',
+              data: {
+                  labels: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"],
+                  datasets: [{
+                      label: '# of Places',
+                      data: [<?php echo str_replace("d=", "", $season["data"]["url"][0]) ?>],
+                      backgroundColor: [
+                          'rgba(86, 226, 137, 1.0)',
+                          'rgba(104, 226, 86, 1.0)',
+                          'rgba(174, 226, 86, 1.0)',
+                          'rgba(226, 297, 86, 1.0)',
+                          'rgba(226, 137, 86, 1.0)',
+                          'rgba(226, 84, 104, 1.0)',
+                          'rgba(226, 86, 174, 1.0)',
+                          'rgba(207, 86, 226, 1.0)',
+                          'rgba(138, 86, 226, 1.0)',
+                          'rgba(86, 104, 226, 1.0)',
+                      ],
+                      borderColor: [
+                          'rgba(86, 226, 137, 0.5)',
+                          'rgba(104, 226, 86, 0.5)',
+                          'rgba(174, 226, 86, 0.5)',
+                          'rgba(226, 297, 86, 0.5)',
+                          'rgba(226, 137, 86, 0.5)',
+                          'rgba(226, 84, 104, 0.5)',
+                          'rgba(226, 86, 174, 0.5)',
+                          'rgba(207, 86, 226, 0.5)',
+                          'rgba(138, 86, 226, 0.5)',
+                          'rgba(86, 104, 226, 0.5)',
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:true,
+                              fontSize: 20
+                          }
+                      }],
+                      xAxes: [{
+                        ticks: {
+                            fontSize: 20
+                        }
+                      }]
+                  },
+                  legend:{display: true,labels:{fontSize:20}}
+              }
+          });
+        
+          var aPie<?php echo $i ?> = jQuery("#pie"+'<?php echo $season["quart"] ?>');
+          var asPie<?php echo $i ?> = new Chart(aPie<?php echo $i ?>, {
+              type: 'pie',
+              data: {
+                  labels: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"],
+                  datasets: [{
+                      data: [<?php echo str_replace("d=", "", $season["data"]["url"][0]) ?>],
+                      backgroundColor: [
+                          'rgba(86, 226, 137, 1.0)',
+                          'rgba(104, 226, 86, 1.0)',
+                          'rgba(174, 226, 86, 1.0)',
+                          'rgba(226, 297, 86, 1.0)',
+                          'rgba(226, 137, 86, 1.0)',
+                          'rgba(226, 84, 104, 1.0)',
+                          'rgba(226, 86, 174, 1.0)',
+                          'rgba(207, 86, 226, 1.0)',
+                          'rgba(138, 86, 226, 1.0)',
+                          'rgba(86, 104, 226, 1.0)',
+                      ],
+                      hoverBackgroundColor: [
+                          'rgba(86, 226, 137, 0.5)',
+                          'rgba(104, 226, 86, 0.5)',
+                          'rgba(174, 226, 86, 0.5)',
+                          'rgba(226, 297, 86, 0.5)',
+                          'rgba(226, 137, 86, 0.5)',
+                          'rgba(226, 84, 104, 0.5)',
+                          'rgba(226, 86, 174, 0.5)',
+                          'rgba(207, 86, 226, 0.5)',
+                          'rgba(138, 86, 226, 0.5)',
+                          'rgba(86, 104, 226, 0.5)',
+                      ],
+                  }]
+              },
+              options:{legend:{display: true,labels:{fontSize:20}}},
+          });
+          <?php endif; ?>
+          <?php endforeach; ?>
           
           // fetch last games
           if(jQuery("#lastGames").length > 0){
@@ -289,6 +402,27 @@ echo("<pre>".var_export($seasons, true)."</pre>");
           }
       } 
     };
-</script>
+</script>       
+            <?php else: ?>
+            <p>Player not found</p>
+            
+            <?php endif; ?>
+            <!-- Modal -->
+            <div id="tableModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-header" id="tableModalHeader">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="tableModalLabel"></h3>
+              </div>
+              <div class="modal-body" id="tableModalBody">
+
+              </div>
+              <div class="modal-footer" id="tableModalFooter">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 

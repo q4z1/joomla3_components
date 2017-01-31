@@ -47,7 +47,8 @@ foreach($tables as $table){
         printf("Errormessage: %s\n", $db->error);
         exit();
     }
-    if($table != "player" && $table != "player_ranking" && $table != "game"){
+    // @XXX: temporary no truncate of game_has_player until there is a better solution
+    if($table != "player" && $table != "player_ranking" && $table != "game" && $table != "game_has_player"){
         $result = $db->query("TRUNCATE `".$table."`;");
         if(!$result){
             printf("Errormessage: %s\n", $db->error);
