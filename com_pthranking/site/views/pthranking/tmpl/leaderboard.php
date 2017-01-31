@@ -48,22 +48,10 @@ $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
             <h4>Ranking calculation:</h4>
             <ol>
                 <li><b>Placement Points:</b><br />
-                 1. = 24 | 2. = 16 | 3. = 10 | 4. = 6 | 5. = 3 | 6. = 2 | 7. = 1
+                 1. = 15 | 2. = 9 | 3. = 6 | 4. = 4 | 5. = 3 | 6. = 2 | 7. = 1
                 </li>
-                <li><b>Average Points:</b><br />
-                 (Placement Points of last 100 games played / number of games played (max.100))
-                </li>
-                <li><b>Score:</b><br />
-                 (Average Points * 100) / Community Average Points   
-                </li>
-                <li><b>Bonus:</b><br />
-                (+ 0,01 % per game, maximum 5% at 500 games)
-                </li>
-                <li><b>First Games Malus:</b><br />
-                (- 96,7% at 1st game reduced by 3,3% steps down to 0% at 30th game)
-                </li>
-                <li><b>Inactivity Malus:</b><br />
-                (You need a minimum of 6 games per 7 days to avoid this malus)
+                <li><b>Formula:</b><br />
+                25*(total points)/(10+games)
                 </li>
             </ol>
         </div>
