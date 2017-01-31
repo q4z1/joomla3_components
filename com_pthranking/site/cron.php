@@ -20,7 +20,7 @@ $tables = array(
 );
 
 $db_name = RDB_DB;
-$db_name .= "_test"; // @XXX: debug testing 1st - REMOVE in productive mode!
+//$db_name .= "_test"; // @XXX: debug testing 1st - REMOVE in productive mode!
 
 $db = new mysqli(RDB_HOST, RDB_USER, RDB_PASS, $db_name);
 if ($db->connect_errno) {
@@ -47,8 +47,7 @@ foreach($tables as $table){
         printf("Errormessage: %s\n", $db->error);
         exit();
     }
-    // @XXX: temporary no truncate of game_has_player until there is a better solution
-    if($table != "player" && $table != "player_ranking" && $table != "game" && $table != "game_has_player"){
+    if($table != "player" && $table != "player_ranking" && $table != "game"){
         $result = $db->query("TRUNCATE `".$table."`;");
         if(!$result){
             printf("Errormessage: %s\n", $db->error);
