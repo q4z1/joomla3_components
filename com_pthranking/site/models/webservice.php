@@ -511,7 +511,7 @@ class PthRankingModelWebservice extends JModelItem
             $tableentry["final_score"]=$final_score;
 //             $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
 //             $tableentry["average_score"]=$average_score;
-            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/(25.0*1000000.0)));
             $tableentry["average_points"]=$average_points;
             $tableentry["userid"]=$row->player_id;
             $tableentry["season_games"]=$row->season_games;
@@ -729,7 +729,7 @@ class PthRankingModelWebservice extends JModelItem
             $row=$rows[0];
             $ret["final_score"]=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
 //             $ret["average score"]=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
-            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/(25.0*1000000.0)));
             $ret["average_points"]=$average_points;
             $ret["points_sum"]=$row->points_sum;
             $ret["username"]=$row->username;
@@ -841,7 +841,7 @@ class PthRankingModelWebservice extends JModelItem
             $tableentry["final_score"]=$final_score;
 //             $average_score=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
 //             $tableentry["average_score"]=$average_score;
-            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/1000000.0));
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/(25.0*1000000.0)));
             $tableentry["average_points"]=$average_points;
             $tableentry["userid"]=$row->player_id;
             $tableentry["season_games"]=$row->season_games;
