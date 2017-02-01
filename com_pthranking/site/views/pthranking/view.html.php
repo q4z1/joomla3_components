@@ -123,8 +123,8 @@ class PthRankingViewPthRanking extends JViewLegacy
             $html .= "<tr><td>Average Points:</td><td colspan='2'>";
             $html .= $basic["average_points"]."</td></tr>\n";
             
-            $html .= "<tr><td>Games last 7 days:</td><td colspan='2'>";
-            $html .= $basic["games_seven_days"]."</td></tr>\n";
+//             $html .= "<tr><td>Games last 7 days:</td><td colspan='2'>";
+//             $html .= $basic["games_seven_days"]."</td></tr>\n"; // No more needed
             
             $html .="</table>\n";
 			

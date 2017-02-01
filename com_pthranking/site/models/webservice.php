@@ -731,7 +731,7 @@ class PthRankingModelWebservice extends JModelItem
 //             $ret["average score"]=sprintf("%.2f %%",max(0.0,($row->average_score)/10000.0));
             $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/(25.0*1000000.0)));
             $ret["average_points"]=$average_points;
-            $ret["points_sum"]=$row->points_sum;
+            $ret["points_sum"]=(int)(($row->points_sum)/25);
             $ret["username"]=$row->username;
             $ret["playerid"]=$row->player_id;
             $ret["season_games"]=$row->season_games;
