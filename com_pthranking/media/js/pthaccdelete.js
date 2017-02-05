@@ -1,14 +1,14 @@
 document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
     if(jQuery("#pthdel").length > 0){
-        jQuery("#pthdel").click(function(e){
+        jQuery("#pthdel").click(function(event){
               var ret = false;
               event.preventDefault();
               event.stopPropagation();
               //console.log("del button clicked.");
               jQuery("#deleteModal").modal();
         });
-        jQuery("#pthDoDel").click(function(e){
+        jQuery("#pthDoDel").click(function(event){
               var ret = false;
               event.preventDefault();
               event.stopPropagation();

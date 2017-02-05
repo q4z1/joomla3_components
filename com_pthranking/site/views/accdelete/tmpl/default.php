@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170117_1209');
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthaccdelete.js?tx=20170117_1209');
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthaccdelete.js?tx=20170205_2156');
 $user = JFactory::getUser();
 ?>
 <?php if($user->guest): ?>
