@@ -44,7 +44,8 @@ foreach($this->all_seasons as $season => $data){
             <div style="clear: left;"></div>
             <hr />
             <h3>Statistics for all time:</h3>
-            <?php /*echo $this->alltimepiedata;*/ ?>
+            <?php if($seasons["alltime"]["data"]["sum"] == 0): echo "n/a"; ?>
+            <?php else: ?>
             <?php
                 $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
                 $row="<tr><td>Place:</td>";
@@ -76,15 +77,16 @@ foreach($this->all_seasons as $season => $data){
             <canvas id="alltimePie" width="100" height="100" class="canvas-holder half"></canvas>
             <canvas id="alltimeChart" width="150" height="100" class="canvas-holder half"></canvas>
             <div style="clear: left;"></div>
-
             <hr />
             <h3>Last 20 Games played:</h3>
             <div id="lastGames"></div>
+            <?php endif; ?>
             <hr />
             <h2>Historical Seasons:</h2>
             <?php foreach($seasons as $season => $data): ?>
             <?php if($season == "current" || $season == "alltime") continue; ?>
             <h4>Statistics for <?php echo $season; ?>:</h3>
+            <?php if($data["data"]["data"][10]["count"] == 0): echo "n/a"; continue; endif;?>
             <?php
                 $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
                 $row="<tr><td>Place:</td>";
@@ -104,8 +106,12 @@ foreach($this->all_seasons as $season => $data){
                 $row="<tr><td>Percent:</td>";
                 $key="percent";
                 foreach($data["data"]["data"] as $key => $entry){
+                 if($data["data"]["data"][10]["count"] > 0){
                     $percent = $entry["count"]*100/$data["data"]["data"][10]["count"];
-                    $row.="<td>".sprintf("%.1f %%",$percent)."</td>";
+                 }else{
+                  $percent = 0;
+                 }
+                 $row.="<td>".sprintf("%.1f %%",$percent)."</td>";
                 }
                 //$row .= "<td>100.00 %</td>";
                 $row.="</tr>\n";

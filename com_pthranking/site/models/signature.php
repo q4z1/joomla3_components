@@ -82,7 +82,7 @@ class PthRankingModelSignature extends JModelItem
 			    $player['username']);
 			// 1st line average & score
 			ImageTTFText ($sig, 12, 0, 75, 48, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
-			    "Rank: ".$player['rank']." / Average: ".$player['average_points']." / Score: ".$player['final_score']);
+			    "Rank: ".$player['rank']." / Average: ".sprintf("%.2f",($player['average_points']/25))." / Score: ".$player['final_score']);
 			// 2nd line games & won
 			ImageTTFText ($sig, 12, 0, 75, 68, $white, JPATH_ROOT . '/media/com_pthranking/fonts/Nunito-Bold.ttf', 
 			    "Games: ".$player['season_games']." / Won: ".$player['wins']);
