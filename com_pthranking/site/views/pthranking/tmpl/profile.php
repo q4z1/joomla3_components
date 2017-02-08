@@ -15,17 +15,19 @@ $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css
 
 //$current = $this->all_seasons[count($this->all_seasons)-2];
 //$alltime = $this->all_seasons[count($this->all_seasons)-1];
-
-$seasons = array();
-$i = 0;
-$current = count($this->all_seasons) - 2;
-$alltime = count($this->all_seasons) - 1;
-foreach($this->all_seasons as $season => $data){
- if($i != $current && $i != $alltime) $seasons[$season] = array("quart" => $season, "data" => $data);
- elseif($i == $current) $seasons["current"] = array("quart" => $season, "data" => $data);
- elseif($i == $alltime) $seasons["alltime"] = array("quart" => $season, "data" => $data);
- $i++;
+if($this->userexists){
+ $seasons = array();
+ $i = 0;
+ $current = count($this->all_seasons) - 2;
+ $alltime = count($this->all_seasons) - 1;
+ foreach($this->all_seasons as $season => $data){
+  if($i != $current && $i != $alltime) $seasons[$season] = array("quart" => $season, "data" => $data);
+  elseif($i == $current) $seasons["current"] = array("quart" => $season, "data" => $data);
+  elseif($i == $alltime) $seasons["alltime"] = array("quart" => $season, "data" => $data);
+  $i++;
+ }
 }
+
 //echo("<pre>".var_export($seasons, true)."</pre>");
 ?>
 <input type="hidden" name="userid" id="userid" value="<?php echo $this->userid?>" />

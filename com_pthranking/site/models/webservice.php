@@ -205,6 +205,20 @@ class PthRankingModelWebservice extends JModelItem
 				$return = true;
 			}
 		}
+		// @XXX: suspended usernames
+		if(!$return){
+			$query = $db->getQuery(true);
+			$query->select('username');
+			$query->from('#__suspended_usernames');
+			$query->where($db->quoteName('username') . " = ".$db->quote($username) );
+			$db->setQuery($query);
+			
+			$rows = $db->loadObjectList();
+			if(is_array($rows) && count($rows) > 0){
+				$return = true;
+			}
+		}
+		
 		// next check if nick with forum account exists
 		if(!$return){
 			$db2    = JFactory::getDBO();
