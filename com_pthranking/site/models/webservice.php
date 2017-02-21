@@ -6,7 +6,7 @@
  * @copyright   Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
- 
+
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
  
@@ -69,7 +69,7 @@ class PthRankingModelWebservice extends JModelItem
 		$recaptcha_response_field =  $jinput->post->get('recaptcha_response_field', '', 'STRING');
 		
 		// re-captcha
-		$post = JRequest::get('post');      
+		$post = JRequest::get('post');
 		JPluginHelper::importPlugin('captcha');
 		$dispatcher = JDispatcher::getInstance();
 		$res = $dispatcher->trigger('onCheckAnswer',$post['recaptcha_response_field']);
@@ -754,7 +754,21 @@ class PthRankingModelWebservice extends JModelItem
 			$ret["gender"] = $row->gender;
             $ret["rank"]=$row->myrank;
 			$ret["avatar"] = $row->avatar_hash . "." . $row->avatar_mime;
-            // TODO: more in-between calculation, bonus/malus explained
+
+            $ava_hash=$row->avatar_hash;
+            // SELECT * FROM `avatar_blacklist` WHERE avatar_hash='23a77825c1d4c0e785dd0cd83eddaf4f'
+            $query = $db->getQuery(true);
+            $query->select('*');
+            $query->from('#__avatar_blacklist');
+            $query->where($db->quoteName('avatar_hash')." = ".$db->quote($ava_hash));
+            $query->setLimit('1');
+            $db->setQuery($query);
+            $rows = $db->loadObjectList();
+            if(is_array($rows) && count($rows) >0)
+            {
+                // bad avatar found
+                $ret["avatar"]="."; // default to "no avatar"
+            }
         }
         return json_encode($ret,JSON_FORCE_OBJECT);
     }
