@@ -1,1 +1,12 @@
-table.tablesorter .header{background-image:url("/media/com_pthranking/images/bg.png");padding-left:30px;}table.tablesorter .headerSortUp{background-image:url("/media/com_pthranking/images/asc.png");background-repeat:no-repeat;}table.tablesorter .headerSortDown{background-image:url("/media/com_pthranking/images/desc.png");background-repeat:no-repeat;}
+table.tablesorter .header {
+	background-image: url("/media/com_pthranking/images/bg.png");
+	padding-left: 30px;
+}
+table.tablesorter .headerSortUp {
+	background-image: url("/media/com_pthranking/images/asc.png");
+	background-repeat: no-repeat;
+}
+table.tablesorter .headerSortDown {
+	background-image: url("/media/com_pthranking/images/desc.png");
+	background-repeat: no-repeat;
+}

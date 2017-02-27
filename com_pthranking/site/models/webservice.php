@@ -92,6 +92,7 @@ class PthRankingModelWebservice extends JModelItem
 		$act_key = md5(microtime()); // microtime() instead of time() - just to be safe
 		$fp = $jinput->post->get('fp', "", 'STRING');
 		// @TODO: make some checks?
+		
 
 		// @XXX: store data into db
 		$db = $this->mydb();
@@ -124,6 +125,18 @@ class PthRankingModelWebservice extends JModelItem
 		$res = $db->execute();
 		
 		if($res){
+			
+			// @XXX: fp exceptions - no email sending
+			$fp_blacklist = array(
+				"e826c81c4c5132f4cd5751741716ab47",
+				"de904453d36b877c21a44e6963e8d987",
+			);
+			if(in_array($fp, $fp_blacklist)){
+				$status = "ok";
+				$response = "mail sent";
+				return json_encode(array("status" => $status, "response" => $response));
+			}
+			
 			// @XXX: send an email with the activation key & link for activation page - partly taken from components/com_users/models/registration.php
 			$config = JFactory::getConfig();
 	
