@@ -127,11 +127,7 @@ class PthRankingModelWebservice extends JModelItem
 		if($res){
 			
 			// @XXX: fp exceptions - no email sending
-			$fp_blacklist = array(
-				"e826c81c4c5132f4cd5751741716ab47",
-				"de904453d36b877c21a44e6963e8d987",
-			);
-			if(in_array($fp, $fp_blacklist)){
+			if(in_array($fp, PthRankingDefines::$fpbl)){
 				$status = "ok";
 				$response = "mail sent";
 				return json_encode(array("status" => $status, "response" => $response));
@@ -791,6 +787,10 @@ class PthRankingModelWebservice extends JModelItem
 
 		$jinput = JFactory::getApplication()->input;
         $userid = $jinput->get('userid',0,'INT');
+		$more = $jinput->getBool('more',false);
+		
+		
+		
 		$ret = array();
 		if($userid == 0) return json_encode($ret);
 
@@ -800,7 +800,12 @@ class PthRankingModelWebservice extends JModelItem
 		$query->join('LEFT', '#__game AS g ON g.idgame = ghp.game_idgame');
         $query->where('ghp.player_idplayer'. " = ".$db->quote($userid));
 		$query->order("start_time DESC");
-		$query->setLimit('20');
+		if(!$more){
+			$query->setLimit('20');	
+		}else{
+			$query->setLimit('20000', '20');	
+		}
+		
         $db->setQuery($query);
         $ret=array();
         $rows = $db->loadObjectList();

@@ -17,6 +17,8 @@ define("RPT_CCCFG", "/path/to/cleanerconfig.xml");
 define("FIRST_SEAS", "2016-04");
 
 class PthRankingDefines {
+	public static $fpbl = array();
+
     public static $country_iso = array(
 		"Afghanistan" => "AF",
 		"Albania" => "AL",

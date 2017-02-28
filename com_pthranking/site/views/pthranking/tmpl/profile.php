@@ -10,8 +10,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20161217_1838'); // chart.js is already included by template
-$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20161220_1858');
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20170228_1823'); // chart.js is already included by template
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170228_1816');
 
 //$current = $this->all_seasons[count($this->all_seasons)-2];
 //$alltime = $this->all_seasons[count($this->all_seasons)-1];
@@ -82,6 +82,9 @@ if($this->userexists){
             <hr />
             <h3>Last 20 Games played:</h3>
             <div id="lastGames"></div>
+            <div id="moreGames">
+             <span style="text-decoration: underline; cursor: pointer; color: #548612">Show more/all games</span>
+            </div>
             <?php endif; ?>
             <hr />
             <h2>Historical Seasons:</h2>
@@ -407,6 +410,19 @@ if($this->userexists){
             jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=lastGames&userid="+jQuery("#userid").val()).done(function(data){
              fillLastGames(data);
             });
+          }
+          
+          if(jQuery("#moreGames").length > 0){
+           
+            jQuery("#moreGames").click(function(event){
+                var ret = false;
+                event.preventDefault();
+                event.stopPropagation();
+                jQuery.get("/component/pthranking/?view=webservice&format=raw&pthtype=lastGames&more=tru&userid="+jQuery("#userid").val()).done(function(data){
+                 fillMoreGames(data);
+                });
+                return ret;
+            }); 
           }
       } 
     };
