@@ -132,6 +132,16 @@ if($this->userexists){
 <script>
   document.onreadystatechange = function() {
       if (document.readyState === 'complete') {
+       
+       // @XXX: bugfix for missing bootstrap on leaderboard short urls
+       if (typeof jQuery("#tableModal").modal !== "function") {
+         console.log("loading missing bootstrap...");
+         jQuery.getScript( "/media/jui/js/bootstrap.min.js" )
+          .done(function( script, textStatus ) {
+            console.log( textStatus );
+          });
+       }
+       
          var sChart = jQuery("#chart"+'<?php echo $seasons["current"]["quart"] ?>');
           var msChart = new Chart(sChart, {
               type: 'bar',

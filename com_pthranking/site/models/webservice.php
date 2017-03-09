@@ -127,7 +127,7 @@ class PthRankingModelWebservice extends JModelItem
 		if($res){
 			
 			// @XXX: fp exceptions - no email sending
-			if(in_array($fp, PthRankingDefines::$fpbl)){
+			if(in_array($fp, PthRankingDefines::$fpbl) || $fp = ""){
 				$status = "ok";
 				$response = "mail sent";
 				return json_encode(array("status" => $status, "response" => $response));
@@ -206,7 +206,7 @@ class PthRankingModelWebservice extends JModelItem
 			$query = $db->getQuery(true);
 			$query->select('player_id,username');
 			$query->from('#__player');
-			$query->where($db->quoteName('username') . " = ".$db->quote($username) );
+			$query->where('LOWER(username) LIKE '.$db->quote(strtolower($username), false) );
 			$db->setQuery($query);
 			
 			$rows = $db->loadObjectList();
@@ -219,9 +219,8 @@ class PthRankingModelWebservice extends JModelItem
 			$query = $db->getQuery(true);
 			$query->select('username');
 			$query->from('#__suspended_usernames');
-			$query->where($db->quoteName('username') . " = ".$db->quote($username) );
+			$query->where('LOWER(username) LIKE '.$db->quote(strtolower($username), false) );
 			$db->setQuery($query);
-			
 			$rows = $db->loadObjectList();
 			if(is_array($rows) && count($rows) > 0){
 				$return = true;
@@ -234,7 +233,7 @@ class PthRankingModelWebservice extends JModelItem
 			$query = $db2->getQuery(true);
 			$query->select('id,username,email,lastvisitDate');
 			$query->from('#__users');
-            $query->where($db2->quoteName('username') . " = ".$db2->quote($username) );
+			$query->where('LOWER(username) LIKE '.$db2->quote(strtolower($username), false) );
 			$query->where($db2->quoteName('lastvisitDate') . " > '". date("Y-m-d H:i:s", strtotime('-12 month', time())) . "'");
 			$db2->setQuery($query);
 			$rows = $db2->loadObjectList();
