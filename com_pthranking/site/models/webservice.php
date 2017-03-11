@@ -798,6 +798,7 @@ class PthRankingModelWebservice extends JModelItem
         $query->from('#__game_has_player as ghp');
 		$query->join('LEFT', '#__game AS g ON g.idgame = ghp.game_idgame');
         $query->where('ghp.player_idplayer'. " = ".$db->quote($userid));
+		$query->where('ghp.game_idgame'. " != 0");
 		$query->order("start_time DESC");
 		if(!$more){
 			$query->setLimit('20');	
