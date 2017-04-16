@@ -24,6 +24,8 @@ class PthRankingModelWebservice extends JModelItem
 
     protected $currentid=0; // these should always be in a pair
     protected $currentname=""; // these should always be in a pair
+
+    protected $mydatabase=""; // has database object, as a cache
 	
 	public function getFlagTooltip($country_iso){
 		$falgTooltip = '<span class="hasTip" title="'.array_search($country_iso, PthRankingDefines::$country_iso).'" >'
@@ -43,6 +45,10 @@ class PthRankingModelWebservice extends JModelItem
      // get the other database
      private function mydb()
      {
+        if(!($this->mydatabase === "")) {
+            return ($this->mydatabase) // caching database
+        }
+        // no database found, connect to one
         $option = array(); //prevent problems
         $option['driver']   = RDB_DRIVER;
         $option['host']     = RDB_HOST;
@@ -51,7 +57,8 @@ class PthRankingModelWebservice extends JModelItem
         $option['database'] = RDB_DB;
         $option['prefix']   = RDB_PREF;
         $db = JDatabaseDriver::getInstance( $option );
-        return($db); // TODO: maybe remember the result
+        $this->mydatabase = $db;
+        return($db);
      }
 	 
 	 public function getDailyChampions(){
