@@ -891,6 +891,8 @@ class PthRankingModelWebservice extends JModelItem
         $table=array();
         foreach($rows as $row) {
             $tableentry=array(); // assoc
+			// @XXX: show only usnernames that are exactly in $nickinputs array
+			if(!in_array($row->username, $nickinputs)) continue;
             $tableentry["username"]=$row->username;
             $index=99;
             for($i=1;$i<11;$i++) {
