@@ -809,16 +809,43 @@ class PthRankingModelWebservice extends JModelItem
         if(is_array($rows) && count($rows) > 0) {
 			$row=$rows[0];
 			$ret["final_score"]=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
+            $xfinal=(int)$row->final_score;
             $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/(25.0*1000000.0)));
             $ret["average_points"]=$average_points;
             $ret["points_sum"]=(int)(($row->points_sum)/25);
-            $ret["season_games"]=$row->season_games;
+            $xgames=(int)$row->season_games;
+            $ret["season_games"]=$xgames;
+            $xid=(int)$row->player_id;
         }
-		$ret["rank"]=-1; // TODO
+        else {
+            return json_encode(array());
+        }
 
 		//   SELECT ( SELECT COUNT(*) FROM player_ranking WHERE final_score>xfinal ) + ( SELECT COUNT(*) FROM player_ranking WHERE final_score=xfinal AND season_games>xgames )+( SELECT COUNT(*) FROM player_ranking WHERE final_score=xfinal AND season_games=xgames AND player_id<xid)+1 ; 
-		// TODO get Rank --- see line above
+        $subQuery1 = $db->getQuery(true);
+        $subQuery1->select('COUNT(*)');
+        $subQuery1->from('`'.RDB_PREF.$tbl_pref.'player_ranking`');
+        $subQuery1->where($db->quoteName('final_score')." > "."$xfinal");
 
+        $subQuery2 = $db->getQuery(true);
+        $subQuery2->select('COUNT(*)');
+        $subQuery2->from('`'.RDB_PREF.$tbl_pref.'player_ranking`');
+        $subQuery2->where($db->quoteName('final_score')." = "."$xfinal","AND");
+        $subQuery2->where($db->quoteName('season_games')." > "."$xgames");
+
+        $subQuery3 = $db->getQuery(true);
+        $subQuery3->select('COUNT(*)');
+        $subQuery3->from('`'.RDB_PREF.$tbl_pref.'player_ranking`');
+        $subQuery3->where($db->quoteName('final_score')." = "."$xfinal","AND");
+        $subQuery3->where($db->quoteName('season_games')." = "."$xgames","AND");
+        $subQuery3->where($db->quoteName('player_id')." < "."$xid");
+
+        $query = $db->getQuery(true);
+        $query->select("(".$subQuery1->__toString() . ") + (".$subQuery2->__toString() . ") + (".$subQuery3->__toString() . ") + 1");
+        $db->setQuery($query);
+
+        $rank = (int)$db->loadResult();
+        $ret["rank"]=$rank;
         return json_encode($ret);
 	}
 	
@@ -1206,10 +1233,13 @@ class PthRankingModelWebservice extends JModelItem
 			$ret["url"]=$return_url;
 			if($season == ""){
 				$season = date("Y") ."-". ceil(date("m")/3);
+//                 $ret["basic"]=array();
 			}else{
 				$season = str_replace("_", "", $season);
+                $ret["basic"]=json_decode($this->getSeasonBasicInfo($season));
 			}
 			// @TODO: fill alltime array! doing it in above foreach or ieterate again?
+
 			$seasonData[$season] = $ret;
 		}
 		$seasonData["total"] = $allTime;
