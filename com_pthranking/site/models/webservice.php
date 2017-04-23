@@ -46,7 +46,7 @@ class PthRankingModelWebservice extends JModelItem
      private function mydb()
      {
         if(!($this->mydatabase === "")) {
-            return ($this->mydatabase) // caching database
+            return ($this->mydatabase); // caching database
         }
         // no database found, connect to one
         $option = array(); //prevent problems
@@ -903,7 +903,15 @@ class PthRankingModelWebservice extends JModelItem
         $query = $db->getQuery(true);
         $query->select('*, rank(final_score,season_games,player_id) AS myrank');
         $query->from('#__player_ranking');
-        $query->where('BINARY username in ('.implode(',',$nicksearches).')');
+		$where = "";
+		$c = count($nickinputs) - 1;
+		foreach($nickinputs as $nickname){
+			$where .= "BINARY username LIKE '$nickname%'";
+			if($c > 0) $where .= " OR ";
+			$c--;
+		}
+		$query->where($where);
+        //$query->where('BINARY username in ('.implode(',',$nicksearches).')');
 //         $query->order('myran'); // TODO: this or username?
 //         $query->order('username');
         $db->setQuery($query);
@@ -917,6 +925,8 @@ class PthRankingModelWebservice extends JModelItem
         $table=array();
         foreach($rows as $row) {
             $tableentry=array(); // assoc
+			// @XXX: show only usnernames that are exactly in $nickinputs array
+			if(!in_array($row->username, $nickinputs)) continue;
             $tableentry["username"]=$row->username;
             $index=99;
             for($i=1;$i<11;$i++) {

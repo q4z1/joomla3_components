@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthreg.js?ts=20170118_0917');
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthreg.js?ts=20170422_1623');
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css');
 $uri = JUri::getInstance();
 $base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));

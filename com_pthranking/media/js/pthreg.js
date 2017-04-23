@@ -42,13 +42,17 @@ document.onreadystatechange = function() {
           found = false;
           pattern = new RegExp(/[<>\"'%&;\(\)]/);
           found = pattern.test(username);
-          if(found){
+          // @XXX: no more beginning or ending white spaces
+          var endSpace = /\s$/;
+          var preSpace = /^\s/;
+          if(found || endSpace.test(username) || preSpace.test(username)){
             jQuery('#errors').html("<ul class='text-danger'><li>Username contains invalid characters! &lt;&gt;\"'%;()&amp; characters are not allowed.</li></ul>");
             jQuery('html, body').animate({
                 scrollTop: jQuery("#errors").offset().top - 50
             }, 500);
             return ret;
           }
+          
           
           jQuery.get(
             "/index.php?option=com_pthranking&task=webservice&format=raw&pthtype=checkusername&pthusername="+username).done(

@@ -36,10 +36,10 @@ if($this->userexists){
         <div>
             <?php if($this->userexists): ?>
             <h1>Profile: <?php echo $this->usernameExt?></h1>
-            <h3>Ranking information about current season (beta phase <?php echo $seasons["current"]["quart"] ?>):</h3>
+            <h3>Ranking information about current season (<?php echo $seasons["current"]["quart"] ?>):</h3>
             <?php echo $this->basicinfo_html; ?>
             <hr />
-            <h3>Statistics for current season (beta phase <?php echo $seasons["current"]["quart"] ?>):</h3>
+            <h3>Statistics for current season (<?php echo $seasons["current"]["quart"] ?>):</h3>
             <?php echo $this->seasonpiedata; ?>
             <canvas id="pie<?php echo $seasons["current"]["quart"] ?>" width="100" height="100" class="canvas-holder half"></canvas>
             <canvas id="chart<?php echo $seasons["current"]["quart"] ?>" width="150" height="100" class="canvas-holder half"></canvas>

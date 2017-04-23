@@ -6,7 +6,7 @@ if($processUser['name'] != "root"){
     die("Access not allowed!\n");    
 }
 
-$table_prefix = date("Y") . "-" . ceil(date("m")/3) . "_";
+$table_prefix = date("Y") . "-" . ceil(date("m", strtotime("-1 day") )/3) - 1 . "_";
 // exception for beta phase 2016/2017
 if(date("Y") == 2017 && date("m") < 4 && date("d") < 31){
     $table_prefix = "2016-4_";
