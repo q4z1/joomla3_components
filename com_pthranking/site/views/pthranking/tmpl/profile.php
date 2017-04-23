@@ -93,7 +93,11 @@ if($this->userexists){
             <h4>Statistics for <?php echo $season; ?>:</h3>
             <?php if($data["data"]["data"][10]["count"] == 0): echo "n/a"; continue; endif;?>
             <?php
-                $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
+                $ret="<table class='table table-striped table-hover table-bordered'>\n";
+                $ret.= "<tr><td>Final Score</td><td>Average Points</td><td>Points Sum</td><td>Games played</td><td>Final Rank</td></tr>";
+                $ret.= "<tr><td>".$data['data']['basic']['final_score']."</td><td>".$data['data']['basic']['average_points']."</td><td>".$data['data']['basic']['points_sum']."</td><td>".$data['data']['basic']['season_games']."</td><td>".$data['data']['basic']['rank']."</td></tr>";
+                $ret.="</table>";
+                $ret.="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
                 $row="<tr><td>Place:</td>";
                 $key="place";
                 foreach($data["data"]["data"] as $key => $entry) $row.="<td>".$entry["place"]."</td>";

@@ -793,7 +793,7 @@ class PthRankingModelWebservice extends JModelItem
         /// $season has format "2016-09_"
 
 
-		$tbl_pref = $season;
+		$tbl_pref = $season . "_";
         $db=$this->mydb();
         $this->set_user_id_pair(); // reading parameters userid and username
 
