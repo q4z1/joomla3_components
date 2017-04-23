@@ -787,6 +787,40 @@ class PthRankingModelWebservice extends JModelItem
         }
         return json_encode($ret,JSON_FORCE_OBJECT);
     }
+
+    private function getSeasonBasicInfo($season) {
+        /// returns data for a historic season
+        /// $season has format "2016-09_"
+
+
+		$tbl_pref = $season;
+        $db=$this->mydb();
+        $this->set_user_id_pair(); // reading parameters userid and username
+
+        $query = $db->getQuery(true);
+        $query->select('*');
+        $query->from('`'.RDB_PREF.$tbl_pref.'player_ranking`');
+		$query->where($db->quoteName('player_id')." = ".$this->currentid);
+		$db->setQuery($query);
+        // SELECT * FROM #__2017-01_player_ranking WHERE playerid = this->currentid
+		// TODO
+        $ret=array();
+        $rows = $db->loadObjectList();
+        if(is_array($rows) && count($rows) > 0) {
+			$row=$rows[0];
+			$ret["final_score"]=sprintf("%.2f %%",max(0.0,($row->final_score)/10000.0));
+            $average_points=sprintf("%.2f",max(0.0,($row->average_score)*6.2/(25.0*1000000.0)));
+            $ret["average_points"]=$average_points;
+            $ret["points_sum"]=(int)(($row->points_sum)/25);
+            $ret["season_games"]=$row->season_games;
+        }
+		$ret["rank"]=-1; // TODO
+
+		//   SELECT ( SELECT COUNT(*) FROM player_ranking WHERE final_score>xfinal ) + ( SELECT COUNT(*) FROM player_ranking WHERE final_score=xfinal AND season_games>xgames )+( SELECT COUNT(*) FROM player_ranking WHERE final_score=xfinal AND season_games=xgames AND player_id<xid)+1 ; 
+		// TODO get Rank --- see line above
+
+        return json_encode($ret);
+	}
 	
 	public function getLastGames(){
         $db=$this->mydb();
