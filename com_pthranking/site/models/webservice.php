@@ -930,15 +930,7 @@ class PthRankingModelWebservice extends JModelItem
         $query = $db->getQuery(true);
         $query->select('*, rank(final_score,season_games,player_id) AS myrank');
         $query->from('#__player_ranking');
-		$where = "";
-		$c = count($nickinputs) - 1;
-		foreach($nickinputs as $nickname){
-			$where .= "BINARY username LIKE '$nickname%'";
-			if($c > 0) $where .= " OR ";
-			$c--;
-		}
-		$query->where($where);
-        //$query->where('BINARY username in ('.implode(',',$nicksearches).')');
+        $query->where('BINARY username in ('.implode(',',$nicksearches).')');
 //         $query->order('myran'); // TODO: this or username?
 //         $query->order('username');
         $db->setQuery($query);
