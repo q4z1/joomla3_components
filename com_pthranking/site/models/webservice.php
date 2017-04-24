@@ -134,7 +134,7 @@ class PthRankingModelWebservice extends JModelItem
 		if($res){
 			
 			// @XXX: fp exceptions - no email sending
-			if(in_array($fp, PthRankingDefines::$fpbl) || $fp = ""){
+			if(in_array($fp, PthRankingDefines::$fpbl) || $fp == ""){
 				$status = "ok";
 				$response = "mail sent";
 				return json_encode(array("status" => $status, "response" => $response));
