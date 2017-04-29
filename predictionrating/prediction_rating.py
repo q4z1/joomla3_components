@@ -11,9 +11,24 @@ import time
 DATASIZE=24
 probabilitysteps=1000
 
+# TODO: make the whole progam more efficient
+
+
 prefix="forget_ranking"
-predict_binary=prefix+"/predict"
-game_binary=prefix+"/game"
+sample_limit=1999 # limit number of games to be analyzed
+predict_start=1000
+
+if len(sys.argv)<4:
+  print "error: needs 3 arguments"
+  exit(1)
+
+prefix=sys.argv[1]
+sample_limit=int(sys.argv[2])
+predict_start=int(sys.argv[3])
+sample_limit+=predict_start
+
+predict_binary=prefix+"/predict.out"
+game_binary=prefix+"/game.out"
 
 # NOTE: no inactivity penalty
 
@@ -77,9 +92,8 @@ def game_prediction_error(pred,res):
       place_error+=(r-prob)**2
   return N*win_error+place_error
 
-sample_limit=9999 # limit number of games to be analyzed
-# predict_start=1000
-predict_start=0
+# sample_limit=9999 # limit number of games to be analyzed
+# predict_start=0
 counter=0
 
 p_pred=Popen(["./"+predict_binary],stdout=PIPE,stdin=PIPE)
@@ -122,3 +136,5 @@ for game in game_db:
 average_prediction_error=float(total_prediction_error)/(counter-predict_start)
 normalized_prediction_error=average_prediction_error/(probabilitysteps**2)
 print total_prediction_error,normalized_prediction_error
+
+print "result:", normalized_prediction_error
