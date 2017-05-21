@@ -30,20 +30,21 @@ mainCalc2 _ _ = "Error: could not parse one of the files"
 -------------------------------------------------------
 -- start debug stuff
 
--- mc3 :: [(Int,Int)] -> [Hformat] -> String
+mc3 :: [(Int,Int)] -> [Hformat] -> String
 -- mc3 x y = show t3
--- mc3 x y = show fl ++ show preres ++ show f2
---   where t1 = translate_hist 1 (x,y)
---         l1res = nextLParams [] t1
---         nls = nextLineSearch t1
---         fl = filterLine nls t1
---         newco = (uncurry doLineSearch) fl
---         xs = snd fl
---         mico = findMinCoord $ snd t1
---         minpoint = (fst.unzip) xs !! findMinIndex ((snd.unzip) xs)
---         nns = neighbors minpoint $ (fst.unzip) xs
---         preres = lineSearch2 (0,128) $ filter ((flip elem) nns . fst) xs
---         f2 = filter ((flip elem) nns . fst ) xs
+mc3 x y = show fl ++ show preres ++ show nns ++ "\n " ++ show mico ++ "\n" ++ show minpoint
+  where t2 = translate_hist 2 (x,y)
+        l2res = nextLParams [] t2
+        nls = nextLineSearch t2
+        fl = filterLine nls t2
+        newco = (uncurry doLineSearch) fl
+        xs = snd fl
+        mico = findMinCoord $ snd t2
+        minpoint = (fst.unzip) xs !! findMinIndex ((snd.unzip) xs)
+        nns = neighbors minpoint $ (fst.unzip) xs
+        preres = lineSearch2 (0,128) $ filter ((flip elem) nns . fst) xs
+        f2 = filter ((flip elem) nns . fst ) xs
+-- TODO: mico and minpoint inconsistent
 
 
 -- end debug stuff
@@ -184,9 +185,22 @@ findMinIndex :: [Double] -> Int
 findMinIndex [] = -1
 findMinIndex ls = pos (minimum ls) ls
 
-findMinCoord :: [([Int],Double)] -> [Int]
-findMinCoord [] = [] -- ERROR
-findMinCoord ls = fst $ ls !! (findMinIndex $ map snd ls)
+-- TODO: different behaviour for same f values
+-- findMinCoord :: [([Int],Double)] -> [Int]
+-- findMinCoord [] = [] -- ERROR
+-- findMinCoord ls = fst $ ls !! (findMinIndex $ map snd ls)
+findMinCoord = fMC2
+
+fMC2 :: [([Int],Double)] -> [Int]
+fMC2 [] = [] -- ERROR
+fMC2 ls = fst $ minBy mysort ls
+     where mysort (xs,fx) (ys,fy) = fx<fy || (fx==fy && sum xs < sum ys)
+-- TODO
+
+-- f x y is true if x<y
+-- fails if list is empty
+minBy :: ( a -> a -> Bool ) -> [a] -> a
+minBy f x = foldl (\ x y -> if f x y then x else y) (head x ) x
 
 isFeasible :: [(Int,Int)] -> [Int] -> Bool
 isFeasible [] [] = True
@@ -209,6 +223,14 @@ hasOptCritCoord (bounds,samples) i =
     (hasCoord (bounds,samples) (coordShift mico i 2)) &&
     (hasCoord (bounds,samples) (coordShift mico i (-1))) &&
     (hasCoord (bounds,samples) (coordShift mico i (-2)))
+  where mico = findMinCoord samples
+
+hasSoftOptCrit :: LevelData -> Int -> Bool
+hasSoftOptCrit (bounds,samples) i =
+    ((hasCoord (bounds,samples) (coordShift mico i 1)) ||
+    (hasCoord (bounds,samples) (coordShift mico i 2))) &&
+    ((hasCoord (bounds,samples) (coordShift mico i (-1))) ||
+    (hasCoord (bounds,samples) (coordShift mico i (-2))))
   where mico = findMinCoord samples
 
 hasCoord :: LevelData -> [Int] -> Bool
@@ -272,8 +294,6 @@ nextParams x
            l3res = nextLParams (findMinCoord $ snd t2) t3
  
 
-
--- TODO: the following returns an error, because they can be on multiple lines
 
 onLine :: Int -> [Int] -> [Int] -> Bool
 onLine i (x:xs) (y:ys) 
