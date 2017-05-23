@@ -27,3 +27,11 @@ canvas.half{
 .easy-autocomplete {  
     display:inline-block;    
 }
+
+.adsense-large-feature{
+    display: none;
+}
+
+.adsense-box-sidebar{
+    display: none;
+}
