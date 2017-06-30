@@ -6,11 +6,30 @@ if($processUser['name'] != "root"){
     die("Access not allowed!\n");    
 }
 
-$table_prefix = date("Y") . "-" . ceil(date("m", strtotime("-1 day") )/3) - 1 . "_";
+
+// start calculating table prefix
+
+// get current unix time stampt
+$now = time();
+
+// // if you want to test the formula for $table_prefix on different days and times, use
+// $now = strtotime("2017-09-30 04:21:00");
+// // note that this will be in the default time zone
+
+
+// get season from 1,2,3,4
+$season_number = ceil(date("m",strtotime("+5 day",$now)) / 3 );
+
+// get year. year should be consistent with season_number!
+$year_number = date("Y",strtotime("+5 day",$now));
+
+// assemble table prefix
+$table_prefix = $year_number . "-" . $season_number . "_";
 // exception for beta phase 2016/2017
 if(date("Y") == 2017 && date("m") < 4 && date("d") < 31){
     $table_prefix = "2016-4_";
 }
+// end calculating table prefix
 
 $tables = array(
   "player",
