@@ -17,19 +17,46 @@ $now = time();
 // // note that this will be in the default time zone
 
 
-// get season from 1,2,3,4
-$season_number = ceil(date("m",strtotime("+5 day",$now)) / 3 );
+function get_season_prefix($timepoint)
+{
+  // warning! the result of this function can depend on the time zone
+  // this function returns the season prefix
+  // for the current season at a specified point in time
 
-// get year. year should be consistent with season_number!
-$year_number = date("Y",strtotime("+5 day",$now));
+  // get season number from 1,2,3,4
+  // jan,feb,mar -> 1, apr,may,jun -> 2, jul,aug,sep -> 3, oct,nov,dec -> 4
+  $season_number = (int) ceil((date("m",$timepoint)-0.5) / 3 );
 
-// assemble table prefix
-$table_prefix = $year_number . "-" . $season_number . "_";
-// exception for beta phase 2016/2017
-if(date("Y") == 2017 && date("m") < 4 && date("d") < 31){
-    $table_prefix = "2016-4_";
+  // get year
+  $year_number = (int) date("Y",$timepoint);
+
+  // exception for beta phase 2016/2017
+  if($year_number == 2017 && date("m",$timepoint) == 1){
+      return "2016-4_";
+  }
+  return $year_number . "-" . $season_number . "_";
 }
+
+
+// get table prefix in an hour
+$new_table_prefix = get_season_prefix(strtotime("+1 hour",$now));
+
+// get old table prefix 24 hours ago
+$old_table_prefix = get_season_prefix(strtotime("-24 hour",$now));
+
+// only allow this script to execute if old_ and new_ are different
+// this means we are at most 24 hours late and at most 1 hour early for a season reset
+if($new_table_prefix == $old_table_prefix)
+{
+  printf("Errormessage: cron script not allowed at this time\n");
+  exit();
+}
+
+// finally, the desired $table_prefix for this script is the one of the old season!
+$table_prefix = $old_table_prefix;
+
 // end calculating table prefix
+
 
 $tables = array(
   "player",
