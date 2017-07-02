@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20170228_1823'); // chart.js is already included by template
-$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170228_1816');
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170527_1416');
 
 //$current = $this->all_seasons[count($this->all_seasons)-2];
 //$alltime = $this->all_seasons[count($this->all_seasons)-1];
@@ -49,7 +49,7 @@ if($this->userexists){
             <?php if($seasons["alltime"]["data"]["sum"] == 0): echo "n/a"; ?>
             <?php else: ?>
             <?php
-                $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
+                $ret="<div class='table-responsive'><table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
                 $row="<tr><td>Place:</td>";
                 $key="place";
                 foreach($seasons["alltime"]["data"]["place"] as $key => $entry) $row.="<td>".$key."</td>";
@@ -73,7 +73,7 @@ if($this->userexists){
                 $row .= "<td>100.00 %</td>";
                 $row.="</tr>\n";
                 $ret.=$row;
-                $ret.="</table>";
+                $ret.="</table></div>";
                 echo $ret;
             ?>
             <canvas id="alltimePie" width="100" height="100" class="canvas-holder half"></canvas>
@@ -94,7 +94,7 @@ if($this->userexists){
             <h4>Statistics for <?php echo $season; ?>:</h3>
             <?php if($data["data"]["data"][10]["count"] == 0): echo "n/a"; continue; endif;?>
             <?php
-                $ret="<table class='table table-striped table-hover table-bordered'>\n";
+                $ret="<div class='table-responsive'><table class='table table-striped table-hover table-bordered table-responsive'>\n";
                 $ret.= "<tr><td>Final Score</td><td>Average Points</td><td>Points Sum</td><td>Games played</td><td>Final Rank</td></tr>";
                 $ret.= "<tr><td>".$data['data']['basic']['final_score']."</td><td>".$data['data']['basic']['average_points']."</td><td>".$data['data']['basic']['points_sum']."</td><td>".$data['data']['basic']['season_games']."</td><td>".$data['data']['basic']['rank']."</td></tr>";
                 $ret.="</table>";
@@ -126,7 +126,7 @@ if($this->userexists){
                 //$row .= "<td>100.00 %</td>";
                 $row.="</tr>\n";
                 $ret.=$row;
-                $ret.="</table>";
+                $ret.="</table></div>";
                 echo $ret;
             ?>
 

@@ -35,3 +35,8 @@ canvas.half{
 .adsense-box-sidebar{
     display: none;
 }
+
+.table-responsive
+{
+    overflow-x: auto;
+}

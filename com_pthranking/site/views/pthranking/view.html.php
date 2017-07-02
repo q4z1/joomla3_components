@@ -93,7 +93,7 @@ class PthRankingViewPthRanking extends JViewLegacy
 				}
 			}
 
-            $html="<table class='table table-striped table-hover table-bordered'>\n";
+            $html="<div class='table-responsive'><table class='table table-striped table-hover table-bordered'>\n";
 			
             $html .= "<tr><td>Name:</td><td>" . $basic["username"]."</td>"
 					. "<td rowspan='5' style='width: 210px; text-align:center; vertical-align: middle;'>" . $ava . "</td></tr>";
@@ -126,7 +126,7 @@ class PthRankingViewPthRanking extends JViewLegacy
 //             $html .= "<tr><td>Games last 7 days:</td><td colspan='2'>";
 //             $html .= $basic["games_seven_days"]."</td></tr>\n"; // No more needed
             
-            $html .="</table>\n";
+            $html .="</table></div>\n";
 			
 
 
@@ -168,7 +168,7 @@ class PthRankingViewPthRanking extends JViewLegacy
 
     function pietohtml($piedata)
     {
-        $ret="<table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
+        $ret="<div class='table-responsive'><table class='table table-striped table-hover table-bordered'>\n"; // maybe removej
         $row="<tr><td>Place:</td>";
         $key="place";
         foreach($piedata as $entry) $row.="<td>".$entry[$key]."</td>";
@@ -186,7 +186,7 @@ class PthRankingViewPthRanking extends JViewLegacy
         foreach($piedata as $entry) $row.="<td>".$entry[$key]."</td>";
         $row.="</tr>\n";
         $ret.=$row;
-        $ret.="</table>";
+        $ret.="</table></div>";
         return $ret;
     }
 
