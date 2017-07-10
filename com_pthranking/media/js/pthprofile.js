@@ -56,7 +56,7 @@ function fillMoreGames(data){
         );
         table += "</table>";
         jQuery("#moreGames").html(table);
-        jQurey("#moreGames").css("color", "inherit!important");
+        jQuery("#moreGames").css("color", "inherit!important");
         
         // bind click events
         jQuery('a.tableInfo').each(function(i, item){

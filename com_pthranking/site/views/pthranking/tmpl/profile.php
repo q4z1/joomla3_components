@@ -10,7 +10,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
-$document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20170228_1823'); // chart.js is already included by template
+$document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20170710_1112'); // chart.js is already included by template
 $document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170527_1416');
 
 //$current = $this->all_seasons[count($this->all_seasons)-2];
@@ -329,6 +329,7 @@ if($this->userexists){
           <?php $i++; ?>
           <?php echo "console.log('season=".$key."');"; ?>
           <?php if($key != "current" && $key != "alltime"): ?>
+          <?php if($season["data"]["data"][10]["count"] == 0): continue; endif;?>
           var sChart<?php echo $i ?> = jQuery("#chart"+'<?php echo $season["quart"] ?>');
           var msChart<?php echo $i ?> = new Chart(sChart<?php echo $i ?>, {
               type: 'bar',
