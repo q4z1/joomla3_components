@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScript(JUri::root() . 'media/com_pthranking/js/pthprofile.js?tx=20170710_1112'); // chart.js is already included by template
-$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170527_1416');
+$document->addStyleSheet(JUri::root() . 'media/com_pthranking/css/pthranking.css?tx=20170801_1820');
 
 //$current = $this->all_seasons[count($this->all_seasons)-2];
 //$alltime = $this->all_seasons[count($this->all_seasons)-1];

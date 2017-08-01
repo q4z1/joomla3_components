@@ -29,11 +29,25 @@ canvas.half{
 }
 
 .adsense-large-feature{
-    display: none;
+    /*display: none;*/
 }
 
 .adsense-box-sidebar{
-    display: none;
+    /*display: none;*/
+}
+
+.myfixed {
+    z-index: 500!important;
+}
+
+@media (max-width:775px){
+    .adsense-large-feature{
+        display: none!important;
+    }
+    
+    .adsense-box-sidebar{
+        display: none!important;
+    }
 }
 
 .table-responsive
