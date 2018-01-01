@@ -1151,15 +1151,13 @@ class PthRankingModelWebservice extends JModelItem
 		$first = explode("-", FIRST_SEAS);
 		$current = array(date("Y") , ceil(date("m")/3));
 		$seasons = array();
-		if(date("Y") >= 2017  && date("m") > 1){
-			$seasons[] = FIRST_SEAS . "_";
-			for($year=$first[0];$year<=$current[0];$year++){
-				for($quart=1;$quart<=4;$quart++){
-					if($year == $first[0] && $quart <= $first[1]) continue;
-					if($year < $current[0] || ($year == $current[0] && $quart < $current[1])){
-						$seasons[] = $year."-".$quart."_";
-						continue;
-					}
+		$seasons[] = FIRST_SEAS . "_";
+		for($year=$first[0];$year<=$current[0];$year++){
+			for($quart=1;$quart<=4;$quart++){
+				if($year == $first[0] && $quart <= $first[1]) continue;
+				if($year < $current[0] || ($year == $current[0] && $quart < $current[1])){
+					$seasons[] = $year."-".$quart."_";
+					continue;
 				}
 			}
 		}
