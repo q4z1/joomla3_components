@@ -94,8 +94,7 @@ function validate_inputs(){
   var gender = jQuery("#pthranking-gender option:selected").val();
   var country = jQuery("#pthranking-country option:selected").val();
   // added re-captcha
-  var recaptcha_challenge_field = jQuery("input#recaptcha_challenge_field").val();
-  var recaptcha_response_field = jQuery("input#recaptcha_response_field").val();
+  var gresponse = jQuery("textarea#g-recaptcha-response").val();
   
   // valid email format?
   var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
@@ -147,8 +146,7 @@ function validate_inputs(){
               password: btoa(password), // crappy base46 encoding - but we need the clear text passwords on php-server side
               gender: gender,
               country: country,
-              recaptcha_challenge_field: recaptcha_challenge_field,
-              recaptcha_response_field: recaptcha_response_field,
+              "g-recaptcha-response": gresponse,
               fp: jQuery('#fp').val(),
               submit: true,
             };
