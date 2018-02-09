@@ -912,7 +912,7 @@ class PthRankingModelWebservice extends JModelItem
         $ret["notfound"]=array();
         for($i=1;$i<11;$i++)
         {
-            $nickx = $jinput->get("nick$i","",'STRING');
+            $nickx = trim($jinput->get("nick$i","",'STRING'));
             if($nickx!="") {
                 $nickinputs[$i]=$nickx;
                 $nicksearches[]=$db->quote($nickx);
